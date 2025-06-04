@@ -1,0 +1,3 @@
+Name: Alex Roe
+Email: alex@example.com
+Skills: NLP, AI

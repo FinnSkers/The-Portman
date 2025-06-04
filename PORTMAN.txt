@@ -1,0 +1,167 @@
+# PORTMAN - The Portfolio Maker
+
+PORTMAN is an AI-powered platform that transforms CVs into personalized, responsive portfolio websites. It leverages advanced AI parsing, retrieval-augmented generation (RAG) for professional benchmarking, and modern web technologies to streamline personal branding and career growth.
+
+## 🚀 Features
+
+- **AI-Powered CV Parsing:** Extract structured data from PDF, DOCX, and TXT files using DeepSeek-R1, Groq, and OpenRouter APIs.
+- **RAG-Enhanced Analysis:** Compare CVs with industry professionals using retrieval-augmented generation.
+- **Automated Website Generation:** Instantly create responsive, modern portfolio websites.
+- **Professional Benchmarking:** Receive AI-driven suggestions by comparing your profile with top professionals in your field.
+- **Multi-Format Support:** Handle various CV formats with intelligent preprocessing.
+- **Real-time Analytics:** Track portfolio performance and user engagement.
+- **Dynamic and 3D Frontend:** Modern, interactive UI/UX with 3D and animated components.
+
+## 🏗️ Architecture
+
+```
+PORTMAN/
+├── backend/              # FastAPI (Python) for API, business logic, and AI integration
+├── frontend/             # Next.js (React) for SSR, SSG, and dynamic portfolio sites
+├── ai-services/          # AI model integrations and pipelines
+├── database/             # PostgreSQL for structured data, Pinecone for vector search
+├── templates/            # Website templates (React/Next.js based)
+├── docs/                 # Documentation
+└── scripts/              # Automation and utilities
+```
+
+## 🔑 API Configuration
+
+# OpenRouter API Configuration with DeepSeek-R1 (Advanced Reasoning Model)
+OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+OPENROUTER_API_KEY = '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'
+OPENROUTER_MODEL = 'deepseek/deepseek-r1-0528-qwen3-8b:free' 
+
+# Fallback models
+GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
+GROQ_API_KEY = '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'
+GROQ_MODEL = 'llama-3.1-8b-instant'
+
+## 🛠️ Tech Stack
+
+### Backend
+- **FastAPI (Python):** High-performance API framework, ideal for AI integration.
+- **Celery:** Background task processing (e.g., file parsing, AI calls).
+- **PostgreSQL:** Reliable, scalable relational database.
+
+### Frontend
+- **Next.js (React):** Server-side rendering, static site generation, and dynamic UI.
+- **Tailwind CSS:** Utility-first CSS framework for rapid UI development.
+- **Three.js / React Three Fiber:** For 3D and animated UI components.
+
+### AI & ML
+- **RAG Pipeline:** Retrieval-augmented generation for professional comparison.
+- **Vector Embeddings:** Semantic search with Pinecone.
+- **NLP Processing:** Advanced text extraction and analysis using DeepSeek-R1, Groq, and OpenRouter APIs.
+
+### Database
+- **PostgreSQL:** For user data, CVs, and analytics.
+- **Pinecone:** For vector storage and semantic search.
+
+### Other
+- **Auth0 or NextAuth.js:** Secure authentication.
+- **Vercel/AWS:** Deployment and hosting.
+- **Plausible/Google Analytics:** Real-time analytics.
+
+### Usage
+
+1. **Upload CV:** Upload your CV in PDF, DOCX, or TXT format.
+2. **AI Processing:** AI extracts and structures your data.
+3. **Comparison:** Get insights by benchmarking with industry professionals.
+4. **Customize:** Choose and personalize your portfolio template.
+5. **Deploy:** Generate and deploy your dynamic website.
+
+## 🎯 Roadmap
+
+The roadmap below breaks down the project into detailed, trackable milestones and tasks. Each milestone can be tracked using GitHub Projects, Issues, or tools like Trello/Linear.
+
+### Milestone 1: Core AI-Powered CV Parsing ✅ 100% COMPLETE
+- [x] Design API endpoints for CV upload and parsing (FastAPI)
+- [x] Integrate DeepSeek-R1 and OpenRouter for CV parsing (real API integration implemented)
+- [x] Implement fallback to Groq API (real API integration implemented)
+- [x] Support PDF, DOCX, and TXT file formats
+- [x] Validate and structure extracted data (AI-powered extraction, with fallback logic)
+- [x] Write unit and integration tests for parsing
+
+### Milestone 2: RAG-Based Professional Comparison ✅ 100% COMPLETE
+- [x] Set up Pinecone for vector storage and semantic search
+- [x] Build RAG pipeline for comparing CVs with industry data
+- [x] Integrate professional datasets for benchmarking (comprehensive logic implemented)
+- [x] Generate actionable AI-driven suggestions (API returns benchmark and similar professionals)
+- [x] Test and validate comparison results (test_rag.py implemented)
+- [x] Implement advanced CV embedding storage and retrieval
+- [x] Add industry-specific insights and trending skills analysis
+- [x] Create comprehensive professional comparison scoring system
+- [x] Build personalized career recommendation engine
+- [x] Add advanced RAG endpoints for detailed analysis
+- [x] Professional benchmarking with industry-specific skill requirements and salary ranges
+- [x] CV embedding storage with Pinecone integration and local fallback
+- [x] Industry analysis with growth rates, trending skills, and job outlook data
+- [x] Match scoring with weighted algorithm (skills 40%, projects 20%, etc.)
+- [x] Personalized recommendations with career advancement and networking strategies
+- [x] Comprehensive test suite with all endpoints validated
+
+### Milestone 3: Dynamic Website Generation
+- [x] Scaffold Next.js frontend for portfolio sites
+- [x] Create basic project structure and configuration
+- [x] Integrate Tailwind CSS for rapid UI development
+- [x] Create dynamic, customizable React components
+- [ ] Add Three.js/React Three Fiber for 3D/animated UI
+- [ ] Implement template selection and customization
+- [x] Build CV upload and processing interface
+- [x] Create portfolio preview and generation system
+
+### Milestone 4: User Management & Authentication
+- [ ] Integrate Auth0 or NextAuth.js for secure authentication
+- [ ] Implement user registration, login, and profile management
+- [ ] Secure API endpoints and user data
+
+### Milestone 5: Real-Time Analytics & Collaboration
+- [ ] Integrate Plausible or Google Analytics for real-time tracking
+- [ ] Build analytics dashboard for users
+- [ ] Enable real-time collaboration using WebSockets
+
+### Milestone 6: Deployment & PWA Capabilities
+- [ ] Configure deployment pipelines (Vercel/AWS)
+- [ ] Optimize for SEO and performance
+- [ ] Add PWA features (offline support, installability)
+- [ ] Monitor and maintain uptime
+
+### Milestone 7: Documentation & Community
+- [ ] Write comprehensive user and developer documentation
+- [ ] Create contribution guidelines and code of conduct
+- [ ] Set up issue templates and project boards for tracking
+
+### Further Expansion Ideas
+- [x] Enhance AI extraction to support more CV fields (education, experience, phone, address, languages, certifications, links, summary, etc.)
+- [x] Add support for more file formats (AI prompt and fallback logic now support all file types; extend as needed)
+- [ ] Implement user authentication and secure endpoints
+- [ ] Integrate database (PostgreSQL) for persistent user and CV data
+- [ ] Add admin dashboard for managing users and analytics
+- [ ] Improve error handling and logging for all endpoints
+- [ ] Add rate limiting and abuse prevention
+- [ ] Enable multi-language CV parsing
+- [ ] Add email notifications for users (e.g., when parsing is complete)
+- [ ] Build a frontend dashboard for users to view and edit parsed data
+- [ ] Integrate with LinkedIn or other professional networks for data enrichment
+
+---
+
+**Progress Tracking:**  
+- Use GitHub Projects, Issues, or tools like Trello/Linear to track each task.
+- Assign owners, set deadlines, and review progress regularly.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- DeepSeek AI for advanced reasoning capabilities
+- Groq for fast inference
+- OpenRouter for multi-model API access
+- The open-source community for inspiration and tools
