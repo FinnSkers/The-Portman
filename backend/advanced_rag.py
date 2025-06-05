@@ -3,12 +3,12 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, List
 import logging
-from backend.rag_utils_fixed import (
+from ai_services.vector_rag import (
     upsert_cv_embedding,
     query_similar_professionals,
     get_professional_benchmark
 )
-from backend.rag_utils import (
+from backend.professional_analysis import (
     compare_with_professionals,
     get_industry_insights,
     calculate_match_score,

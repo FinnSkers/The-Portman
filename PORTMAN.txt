@@ -113,7 +113,7 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 
 ### Milestone 4: User Management & Authentication
 - [ ] Integrate Auth0 or NextAuth.js for secure authentication
-- [ ] Implement user registration, login, and profile management
+- [ ] Implement user registration, login, and profile management (backend stubs present)
 - [ ] Secure API endpoints and user data
 
 ### Milestone 5: Real-Time Analytics & Collaboration
@@ -124,7 +124,7 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 ### Milestone 6: Deployment & PWA Capabilities
 - [ ] Configure deployment pipelines (Vercel/AWS)
 - [ ] Optimize for SEO and performance
-- [ ] Add PWA features (offline support, installability)
+- [x] Add PWA features (offline support, installability) (PWA config present in frontend)
 - [ ] Monitor and maintain uptime
 
 ### Milestone 7: Documentation & Community
@@ -135,10 +135,10 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 ### Further Expansion Ideas
 - [x] Enhance AI extraction to support more CV fields (education, experience, phone, address, languages, certifications, links, summary, etc.)
 - [x] Add support for more file formats (AI prompt and fallback logic now support all file types; extend as needed)
-- [ ] Implement user authentication and secure endpoints
-- [ ] Integrate database (PostgreSQL) for persistent user and CV data
+- [ ] Implement user authentication and secure endpoints (backend stubs only)
+- [ ] Integrate database (PostgreSQL) for persistent user and CV data (database folder present, not fully integrated)
 - [ ] Add admin dashboard for managing users and analytics
-- [ ] Improve error handling and logging for all endpoints
+- [x] Improve error handling and logging for all endpoints (global logging and log viewer implemented)
 - [ ] Add rate limiting and abuse prevention
 - [ ] Enable multi-language CV parsing
 - [ ] Add email notifications for users (e.g., when parsing is complete)

@@ -4,8 +4,8 @@ from typing import List
 from pydantic import BaseModel
 import os
 import shutil
-from backend.cv_utils import parse_cv_with_ai
-from backend.rag_utils_fixed import upsert_cv_embedding, query_similar_professionals, get_professional_benchmark
+from ai_services.cv_ai import parse_cv_with_ai
+from ai_services.vector_rag import upsert_cv_embedding, query_similar_professionals, get_professional_benchmark
 
 ALLOWED_EXTENSIONS = {"pdf", "docx", "txt"}
 UPLOAD_DIR = "uploaded_cvs"
