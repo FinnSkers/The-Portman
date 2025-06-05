@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@heroicons/react": "^2.2.0",
+    "@lottiefiles/react-lottie-player": "^3.6.0",
+    "@react-three/drei": "^10.1.2",
+    "@react-three/fiber": "^9.1.2",
+    "framer-motion": "^12.16.0",
+    "lottie-react": "^2.4.1",
+    "next-pwa": "^5.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scroll-parallax": "^3.4.5",
+    "three": "^0.177.0",
+    "zustand": "^5.0.5"
+  }
+}

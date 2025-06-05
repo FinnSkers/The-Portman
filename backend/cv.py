@@ -4,10 +4,8 @@ from typing import List
 from pydantic import BaseModel
 import os
 import shutil
-from cv_utils import parse_cv_with_ai
-import sys
-sys.path.insert(0, os.path.dirname(__file__))
-from rag_utils import upsert_cv_embedding, query_similar_professionals, get_professional_benchmark
+from backend.cv_utils import parse_cv_with_ai
+from backend.rag_utils_fixed import upsert_cv_embedding, query_similar_professionals, get_professional_benchmark
 
 ALLOWED_EXTENSIONS = {"pdf", "docx", "txt"}
 UPLOAD_DIR = "uploaded_cvs"

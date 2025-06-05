@@ -3,11 +3,16 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, List
 import logging
-from rag_utils import (
-    compare_with_professionals, 
-    store_cv_embedding, 
+from backend.rag_utils_fixed import (
+    upsert_cv_embedding,
+    query_similar_professionals,
+    get_professional_benchmark
+)
+from backend.rag_utils import (
+    compare_with_professionals,
     get_industry_insights,
-    calculate_match_score
+    calculate_match_score,
+    store_cv_embedding
 )
 
 router = APIRouter()
@@ -179,10 +184,12 @@ async def get_industry_analysis(industry: str):
 async def get_industry_benchmark(industry: str, experience_level: str):
     """Get industry-specific benchmark data."""
     try:
-        from rag_utils import generate_professional_benchmark
-        
         # Generate benchmark with empty skills for general reference
-        benchmark = generate_professional_benchmark(industry, experience_level, [])
+        benchmark = get_professional_benchmark({
+            'industry': industry,
+            'experience_level': experience_level,
+            'skills': []
+        })
         
         return {
             'status': 'success',
