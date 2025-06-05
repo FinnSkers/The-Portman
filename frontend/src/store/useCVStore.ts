@@ -11,6 +11,7 @@ interface CVState {
   setData: (data: Record<string, unknown> | null) => void;
   setStatus: (status: CVState['status']) => void;
   setError: (error: string | null) => void;
+  clearAll: () => void;
 }
 
 export const useCVStore = create<CVState>((set) => ({
@@ -24,4 +25,5 @@ export const useCVStore = create<CVState>((set) => ({
   setData: (data) => set({ data }),
   setStatus: (status) => set({ status }),
   setError: (error) => set({ error }),
+  clearAll: () => set({ file: null, filename: null, data: null, status: 'idle', error: null }),
 }));

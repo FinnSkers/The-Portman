@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 export default function AnimatedParticles({
   className = "",
@@ -11,8 +11,16 @@ export default function AnimatedParticles({
   count?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ready, setReady] = useState(false);
+  // Only generate particles on the client
+  const [particles, setParticles] = useState<any[]>([]);
 
   useEffect(() => {
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -26,21 +34,22 @@ export default function AnimatedParticles({
     }
     resize();
     window.addEventListener("resize", resize);
-    // Enhanced particles: depth, blur, speed
-    const particles = Array.from({ length: count }, () => ({
+    // Only generate randoms on client
+    const generatedParticles = Array.from({ length: count }, () => ({
       x: Math.random() * (canvas?.width || 800),
       y: Math.random() * (canvas?.height || 400),
-      r: Math.random() * 2 + 1 + Math.random() * 3, // more size variety
+      r: Math.random() * 2 + 1 + Math.random() * 3,
       dx: (Math.random() - 0.5) * (0.5 + Math.random()),
       dy: (Math.random() - 0.5) * (0.5 + Math.random()),
       blur: Math.random() * 2,
       alpha: 0.5 + Math.random() * 0.5,
       z: Math.random(),
     }));
+    setParticles(generatedParticles);
     function animate() {
       if (!canvas || !ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const p of particles) {
+      for (const p of generatedParticles) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
@@ -62,7 +71,7 @@ export default function AnimatedParticles({
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
     };
-  }, [color, count]);
+  }, [color, count, ready]);
 
   return (
     <canvas

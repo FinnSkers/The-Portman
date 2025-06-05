@@ -3,6 +3,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, List
 import logging
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from ai_services.vector_rag import (
     upsert_cv_embedding,
     query_similar_professionals,

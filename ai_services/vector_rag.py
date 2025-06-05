@@ -1,7 +1,7 @@
 # Vector embedding and RAG pipeline integration for PORTMAN
 import os
 from typing import List, Dict
-import pinecone
+from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -11,17 +11,18 @@ PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "your-pinecone-api-key")
 PINECONE_INDEX = os.getenv("PINECONE_INDEX", "portman-cv-index")
 PINECONE_REGION = os.getenv("PINECONE_REGION", "us-east-1")
 
-# Initialize Pinecone
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_REGION)
+# Initialize Pinecone client (new SDK)
+pc = Pinecone(api_key=PINECONE_API_KEY)
 
 # Ensure index exists
-if PINECONE_INDEX not in pinecone.list_indexes():
-    pinecone.create_index(
+if PINECONE_INDEX not in pc.list_indexes().names():
+    pc.create_index(
         name=PINECONE_INDEX,
         dimension=1536,
-        metric="cosine"
+        metric="cosine",
+        spec=ServerlessSpec(cloud="aws", region=PINECONE_REGION)
     )
-index = pinecone.Index(PINECONE_INDEX)
+index = pc.Index(PINECONE_INDEX)
 
 def upsert_cv_embedding(user_id: str, embedding: List[float]):
     if len(embedding) != 1536:

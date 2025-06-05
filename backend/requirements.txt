@@ -1,9 +1,8 @@
 fastapi
 uvicorn
-python-multipart
-requests
-chromadb
 python-dotenv
-pytest
 PyPDF2
 python-docx
+requests
+pydantic
+pinecone

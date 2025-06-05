@@ -48,3 +48,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Error contacting OpenRouter.', error: String(e) }, { status: 500 });
   }
 }
+
+export const dynamic = "force-dynamic";
+export default { POST };

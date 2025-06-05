@@ -115,22 +115,31 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [ ] Integrate Auth0 or NextAuth.js for secure authentication
 - [ ] Implement user registration, login, and profile management (backend stubs present)
 - [ ] Secure API endpoints and user data
+- [ ] Add CSRF/XSS protection and security headers (optional, but recommended)
+- [ ] Ensure GDPR/data privacy compliance (user data export/delete, privacy policy) (optional, but recommended)
+- [ ] Add audit logging for sensitive actions (optional)
 
 ### Milestone 5: Real-Time Analytics & Collaboration
 - [ ] Integrate Plausible or Google Analytics for real-time tracking
 - [ ] Build analytics dashboard for users
 - [ ] Enable real-time collaboration using WebSockets
+- [ ] Add user feedback system (bug report, feature request, satisfaction survey) (optional)
 
 ### Milestone 6: Deployment & PWA Capabilities
 - [ ] Configure deployment pipelines (Vercel/AWS)
 - [ ] Optimize for SEO and performance
 - [x] Add PWA features (offline support, installability) (PWA config present in frontend)
 - [ ] Monitor and maintain uptime
+- [ ] Set up error monitoring (Sentry, LogRocket, or similar) (optional, but recommended)
+- [ ] Add health check endpoints for backend (optional)
+- [ ] Implement automated backups for database and user data (optional)
+- [ ] Add uptime monitoring and alerting (optional)
 
 ### Milestone 7: Documentation & Community
 - [ ] Write comprehensive user and developer documentation
 - [ ] Create contribution guidelines and code of conduct
 - [ ] Set up issue templates and project boards for tracking
+- [ ] Add onboarding/tutorial flow for new users (optional)
 
 ### Further Expansion Ideas
 - [x] Enhance AI extraction to support more CV fields (education, experience, phone, address, languages, certifications, links, summary, etc.)
@@ -144,6 +153,14 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [ ] Add email notifications for users (e.g., when parsing is complete)
 - [ ] Build a frontend dashboard for users to view and edit parsed data
 - [ ] Integrate with LinkedIn or other professional networks for data enrichment
+- [ ] Conduct accessibility audit (WCAG compliance, keyboard navigation, ARIA labels) (optional, but recommended)
+- [ ] Implement dark/light mode toggle (if not already present) (optional)
+- [ ] Add loading skeletons/placeholders for slow operations (optional)
+- [ ] Enable multi-language UI and localization (optional)
+- [ ] Add DevOps scripts for local development, staging, and production (optional)
+- [ ] Add support for custom domain and SSL (optional)
+- [ ] Add API versioning and deprecation policy (optional)
+- [ ] Add support for mobile/responsive PWA enhancements (optional)
 
 ---
 

@@ -34,4 +34,14 @@ export async function compareCVRAG(filename: string, user_id: string, embedding:
   return res.json();
 }
 
+export async function analyzeCVRAG(cv_data: any) {
+  const res = await fetch(`${API_BASE_URL}/cv/rag/analyze/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cv_data }),
+  });
+  if (!res.ok) throw new Error('Failed to analyze CV with RAG');
+  return res.json();
+}
+
 // Add more API utilities as needed
