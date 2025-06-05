@@ -846,3 +846,57 @@ html, body {
 section, .snap-start {
   scroll-snap-align: start;
 } */
+
+/* Hamburger menu overlay for mobile nav */
+@media (max-width: 767px) {
+  #main-nav-menu {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100vw;
+    background: rgba(255,255,255,0.97);
+    box-shadow: 0 8px 32px 0 rgba(99,102,241,0.10);
+    border-bottom: 1px solid #e0e7ff;
+    z-index: 100;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  html.dark #main-nav-menu {
+    background: rgba(24,24,27,0.97);
+    border-bottom: 1px solid #312e81;
+  }
+}
+
+/* Hamburger button focus ring */
+button:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Hide nav menu when not open on mobile */
+#main-nav-menu.hidden {
+  display: none !important;
+}
+
+/* Smooth sticky header shadow */
+header.sticky {
+  box-shadow: 0 2px 16px 0 rgba(99,102,241,0.08), 0 1.5px 8px 0 rgba(168,85,247,0.06);
+  transition: box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Glowing/pulsing effect and slow bounce animation for the main CTA button */
+.cta-glow {
+  box-shadow: 0 0 32px 8px rgba(99,102,241,0.12), 0 2px 16px 0 rgba(168,85,247,0.10);
+  animation: cta-glow-pulse 2.5s ease-in-out infinite;
+}
+@keyframes cta-glow-pulse {
+  0%, 100% { box-shadow: 0 0 32px 8px rgba(99,102,241,0.12), 0 2px 16px 0 rgba(168,85,247,0.10); }
+  50% { box-shadow: 0 0 48px 16px rgba(99,102,241,0.22), 0 4px 32px 0 rgba(168,85,247,0.18); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2.2s infinite;
+}
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}

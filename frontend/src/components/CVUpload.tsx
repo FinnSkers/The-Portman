@@ -116,7 +116,8 @@ export default function CVUpload() {
 
   const { data } = useCVStore();
 
-  return (    <GlassCard
+  return (
+    <GlassCard
       className={`w-full max-w-md mx-auto flex flex-col items-center transition-all duration-300 relative ${
         dragActive 
           ? 'ring-4 ring-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/80 scale-105 shadow-2xl' 
@@ -126,57 +127,40 @@ export default function CVUpload() {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       tabIndex={0}
-      aria-label="Upload your CV by clicking the button or dragging a file here"
+      aria-label="Upload your CV by clicking the button or dragging a file here. Accepted formats: PDF, DOCX, TXT. Max size: 5MB."
+      aria-describedby="cv-upload-guidance"
     >
       {dragActive && (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-xl pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-br from-indigo-400/30 to-purple-400/30 rounded-xl pointer-events-none border-4 border-dashed border-indigo-400 flex flex-col items-center justify-center z-20"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.2 }}
         >
-          <motion.div
-            className="absolute inset-4 border-2 border-dashed border-indigo-400 rounded-lg"
-            animate={{ 
-              borderColor: ["#6366f1", "#8b5cf6", "#6366f1"],
-              scale: [1, 1.02, 1]
-            }}
-            transition={{ 
-              duration: 1.5, 
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              className="text-indigo-600 dark:text-indigo-400 font-bold text-lg flex items-center gap-2"
-              animate={{ y: [-5, 5, -5] }}
-              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <span className="text-2xl">📁</span>
-              Drop your CV here!
-            </motion.div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-4xl" role="img" aria-label="Upload icon">📤</span>
+            <span className="font-bold text-indigo-700 dark:text-indigo-300 text-lg">Drop your CV here!</span>
+            <span className="text-xs text-gray-600 dark:text-gray-300">Accepted: PDF, DOCX, TXT (max 5MB)</span>
           </div>
         </motion.div>
       )}
-      
       <motion.div
         className="w-full flex flex-col items-center relative z-10"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="text-sm font-medium mb-2 text-center flex flex-col items-center">
-          <span className="animated-icon mb-2">
-            <motion.span
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-              className="inline-block text-2xl"
-            >📄</motion.span>
+        <span id="cv-upload-guidance" className="text-sm font-medium mb-2 text-center flex flex-col items-center">
+          <span className="flex gap-2 mb-2">
+            <span className="inline-block text-2xl" role="img" aria-label="PDF">📄</span>
+            <span className="inline-block text-2xl" role="img" aria-label="DOCX">📝</span>
+            <span className="inline-block text-2xl" role="img" aria-label="TXT">📑</span>
           </span>
           Upload your CV (PDF, DOCX, TXT)
-        </span>        {(status === 'idle' || status === 'error') && (
+          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">Max file size: 5MB</span>
+        </span>
+        {(status === 'idle' || status === 'error') && (
           <motion.div className="w-full">
             <motion.button
               type="button"
@@ -212,7 +196,8 @@ export default function CVUpload() {
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                   className="inline-block text-2xl"
-                >📄</motion.span>
+                  role="img" aria-label="Upload icon"
+                >📤</motion.span>
                 Upload your CV
               </span>
             </motion.button>
@@ -225,14 +210,16 @@ export default function CVUpload() {
           accept=".pdf,.doc,.docx,.txt"
           className="hidden"
           onChange={handleFileChange}
-        />        <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">or drag & drop your file here</span>
-        
+          aria-label="Select a CV file to upload (PDF, DOCX, TXT, max 5MB)"
+        />
+        <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">or drag & drop your file here</span>
         {file && (
           <motion.div
             className="mt-3 w-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3"
             initial={{ opacity: 0, scale: 0.9, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
+            aria-live="polite"
           >
             <div className="flex items-center gap-3">
               <motion.span
@@ -246,9 +233,8 @@ export default function CVUpload() {
                   repeatDelay: 3
                 }}
                 className="text-2xl"
-              >
-                📄
-              </motion.span>
+                role="img" aria-label="File icon"
+              >📄</motion.span>
               <div className="flex-1 min-w-0">
                 <motion.p 
                   className="text-green-700 dark:text-green-300 font-medium truncate"
@@ -271,6 +257,7 @@ export default function CVUpload() {
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
                 className="text-green-500"
+                role="img" aria-label="Success"
               >
                 ✅
               </motion.div>

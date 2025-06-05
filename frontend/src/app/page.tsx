@@ -1,16 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import CVUpload from "@/components/CVUpload";
 import ScrollingTextAnimation from "@/components/ScrollingTextAnimation";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTheme } from "next-themes";
-import { 
-  ArrowDownTrayIcon, 
-  UserCircleIcon, 
-  SparklesIcon, 
-  Cog6ToothIcon, 
-  SunIcon, 
+import {
+  ArrowDownTrayIcon,
+  UserCircleIcon,
+  SparklesIcon,
+  Cog6ToothIcon,
+  SunIcon,
   MoonIcon,
   RocketLaunchIcon,
   ShieldCheckIcon,
@@ -23,14 +22,13 @@ import { useCVStore } from "@/store/useCVStore";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useInView } from 'react-intersection-observer';
 import FloatingChatTip, { FloatingProTip } from "@/components/FloatingChatTip";
+import Lottie from "lottie-react";
+import processUploadAnim from "@/../public/process-upload.json";
 
 export default function Home() {
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const { theme, setTheme } = useTheme();
   const heroRef = useRef<HTMLDivElement>(null);
-  // Use a generic ref and cast as needed for both usages
-  const heroTitleRef = useRef(null); // for h1 and subtitle
-  const { status, data } = useCVStore();
+  const heroTitleRef = useRef(null);
+  const { setTheme } = useTheme();
 
   useEffect(() => {
     setTheme(
@@ -62,7 +60,7 @@ export default function Home() {
   );
 
   return (
-    <main className="relative w-full min-h-screen overflow-x-hidden">
+    <main className="relative w-full min-h-screen overflow-x-hidden" aria-label="PORTMAN landing page">
       {/* Floating Chat and Pro Tip Buttons (best-practice placement) */}
       <FloatingChatTip />
       <FloatingProTip />
@@ -101,6 +99,7 @@ export default function Home() {
         {/* Hero Section - Stunning Starting Screen */}
         <section 
           className="relative min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center overflow-hidden"
+          aria-label="Hero section: AI-powered portfolio creation"
         >
           <motion.div
             className="absolute inset-0"
@@ -118,6 +117,7 @@ export default function Home() {
             className="relative z-10 mb-4"
           >
             <motion.h1
+              id="hero-title"
               ref={heroTitleRef as any}
               className="text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight text-center select-none"
               style={{
@@ -168,7 +168,8 @@ export default function Home() {
           </div>
         </section>
         {/* Stats Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-label="Platform statistics">
+          <h2 id="stats-title" className="sr-only">Platform Statistics</h2>
           <motion.div
             ref={statsRef}
             initial={{ opacity: 0, y: 50 }}
@@ -203,7 +204,8 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 px-6 bg-gradient-to-r from-white/60 to-indigo-50/60 dark:from-gray-900/60 dark:to-indigo-950/60 backdrop-blur-sm">
+        <section className="py-20 px-6 bg-gradient-to-r from-white/60 to-indigo-50/60 dark:from-gray-900/60 dark:to-indigo-950/60 backdrop-blur-sm" aria-label="Key features">
+          <h2 id="features-title" className="sr-only">Key Features</h2>
           <motion.div
             ref={featuresRef}
             initial={{ opacity: 0, y: 50 }}
@@ -267,7 +269,8 @@ export default function Home() {
         </section>
 
         {/* Process Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-label="How it works: process steps">
+          <h2 id="process-title" className="sr-only">How It Works</h2>
           <motion.div
             ref={processRef}
             initial={{ opacity: 0, y: 50 }}
@@ -290,25 +293,25 @@ export default function Home() {
                   step: "01",
                   title: "Upload",
                   description: "Drop your CV in any format - PDF, DOCX, or TXT",
-                  icon: "📄"
+                  icon: <Lottie animationData={processUploadAnim} loop={true} style={{ width: 64, height: 64 }} aria-label="Animated upload arrow" />
                 },
                 {
                   step: "02", 
                   title: "AI Analysis",
                   description: "Our AI extracts and structures your professional data",
-                  icon: "🤖"
+                  icon: <span className="text-6xl" role="img" aria-label="AI Robot">🤖</span>
                 },
                 {
                   step: "03",
                   title: "Customize",
                   description: "Choose from stunning templates and personalize your brand",
-                  icon: "🎨"
+                  icon: <span className="text-6xl" role="img" aria-label="Palette">🎨</span>
                 },
                 {
                   step: "04",
                   title: "Launch",
                   description: "Deploy your portfolio and start impressing employers",
-                  icon: "🚀"
+                  icon: <span className="text-6xl" role="img" aria-label="Rocket">🚀</span>
                 }
               ].map((step, index) => (
                 <motion.div
@@ -316,13 +319,15 @@ export default function Home() {
                   initial={{ opacity: 0, x: -50 }}
                   animate={processInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.6, delay: index * 0.2 }}
-                  className="relative group"
+                  className="relative group focus-within:ring-4 focus-within:ring-indigo-300 rounded-2xl outline-none"
+                  tabIndex={0}
+                  aria-label={`Step ${step.step}: ${step.title}. ${step.description}`}
                 >
                   {index < 3 && (
                     <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-indigo-300 to-transparent -translate-y-1/2 z-0" />
                   )}
                   <div className="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg group-hover:shadow-xl transition-all duration-300 text-center">
-                    <div className="text-6xl mb-4">{step.icon}</div>
+                    <div className="mb-4 flex justify-center items-center">{step.icon}</div>
                     <div className="text-sm font-bold text-indigo-600 mb-2">STEP {step.step}</div>
                     <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100">{step.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{step.description}</p>
@@ -334,7 +339,8 @@ export default function Home() {
         </section>
 
         {/* Pricing Section */}
-        <section className="py-20 px-6 bg-gradient-to-r from-indigo-50/60 to-purple-50/60 dark:from-indigo-950/60 dark:to-purple-950/60">
+        <section className="py-20 px-6 bg-gradient-to-r from-indigo-50/60 to-purple-50/60 dark:from-indigo-950/60 dark:to-purple-950/60" aria-label="Pricing plans">
+          <h2 id="pricing-title" className="sr-only">Pricing Plans</h2>
           <motion.div
             ref={pricingRef}
             initial={{ opacity: 0, y: 50 }}
@@ -427,7 +433,8 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-labelledby="testimonials-title">
+          <h2 id="testimonials-title" className="sr-only">User Testimonials</h2>
           <motion.div
             ref={testimonialsRef}
             initial={{ opacity: 0, y: 50 }}
@@ -488,7 +495,7 @@ export default function Home() {
                     </blockquote>
                     <div className="flex mt-4">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <StarIcon key={i} className="w-5 h-5 text-yellow-400" />
+                        <CheckIcon key={i} className="w-5 h-5 text-yellow-400" />
                       ))}
                     </div>
                   </div>
@@ -513,13 +520,14 @@ export default function Home() {
                 Join over 2 million professionals who've created stunning portfolios with PORTMAN
               </p>
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.08, boxShadow: "0 0 32px 8px rgba(99,102,241,0.18)" }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => heroRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-white text-indigo-600 px-12 py-6 rounded-full font-bold text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-4 mx-auto"
+                className="cta-glow bg-white text-indigo-600 px-12 py-6 rounded-full font-black text-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-4 mx-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-400/60 neural-pulse"
+                aria-label="Start building your portfolio now for free"
               >
-                <PlayIcon className="w-6 h-6" />
-                Start Building Now - It's Free!
+                <PlayIcon className="w-7 h-7 animate-bounce-slow" />
+                Start Building Now – It&apos;s Free!
               </motion.button>
             </motion.div>
           </div>
