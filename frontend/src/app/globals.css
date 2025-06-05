@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@400;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-heading: 'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --background: #f8fafc;
+  --foreground: #18181b;
+  --accent: #6366f1;
+  --accent-dark: #4338ca;
+  --glass-bg: rgba(255,255,255,0.25);
+  --glass-border: rgba(99,102,241,0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #f8fafc;
+    --glass-bg: rgba(24,24,27,0.45);
+    --glass-border: rgba(99,102,241,0.28);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Modern animated gradient background with glass and subtle pattern */
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f3f4f6 0%, #e0e7ff 40%, #f0abfc 100%),
+    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="56" stroke="%23e0e7ff" stroke-width="2" fill="none" opacity="0.07"/><rect x="18" y="18" width="84" height="84" rx="24" stroke="%23f0abfc" stroke-width="2" fill="none" opacity="0.05"/></svg>');
+  background-size: 200% 200%, 120px 120px;
+  background-repeat: repeat;
+  animation: bg-move 16s ease-in-out infinite;
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(120deg, #18181b 0%, #312e81 50%, #9333ea 100%),
+      url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="56" stroke="%23312e81" stroke-width="2" fill="none" opacity="0.10"/><rect x="18" y="18" width="84" height="84" rx="24" stroke="%239333ea" stroke-width="2" fill="none" opacity="0.08"/></svg>');
+    background-size: 200% 200%, 120px 120px;
+    background-repeat: repeat;
+    animation: bg-move 16s ease-in-out infinite;
+    color: #e0e7ff;
+  }
+}
+
+@keyframes bg-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.glass {
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  color: var(--foreground);
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+button, .btn {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  border: none;
+  border-radius: 9999px;
+  box-shadow: 0 4px 32px 0 rgba(99,102,241,0.12);
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+button:hover, .btn:hover {
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+  color: #fff;
+  box-shadow: 0 8px 48px 0 rgba(99,102,241,0.18);
+}
+
+input, textarea {
+  color: var(--foreground);
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  font-family: var(--font-body);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #18181b 0%, #232946 100%);
+    color: #e0e7ff;
+  }
+}
+
+/* Animated button ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple:after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background: rgba(99, 102, 241, 0.2);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.ripple:active:after {
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Parallax and 3D section enhancements */
+@media (max-width: 768px) {
+  .parallax-section {
+    min-height: 300px !important;
+  }
+}
+
+/* Loader and feedback */
+.loader {
+  border: 4px solid #e0e7ff;
+  border-top: 4px solid #6366f1;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade in animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.8s cubic-bezier(0.4,0,0.2,1) both;
+}
+.animate-fade-in-up {
+  animation: fade-in 1s cubic-bezier(0.4,0,0.2,1) both;
+}
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+
+/* Scroll snap for all main sections */
+html, body {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+main {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+section, .snap-start {
+  scroll-snap-align: start;
+}
+/* Scroll progress bar styling */
+.scroll-progress-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #6366f1 0%, #a5b4fc 100%);
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.12);
+  transition: width 0.3s cubic-bezier(.4,0,.2,1);
+}
+/* Section fade/slide-in animation (for fallback) */
+.fade-slide-in {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+}
+.fade-slide-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Floating glassmorphism shapes for FAQ section */
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-24px) scale(1.04); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(32px) scale(1.07); }
+}
+.animate-float {
+  animation: float 7s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: float-slow 14s ease-in-out infinite;
+}
