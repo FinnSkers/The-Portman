@@ -13,7 +13,7 @@ if exist "%VENV_PYTHON%" (
 )
 
 REM Start FastAPI backend (module mode for relative imports)
-start powershell -NoExit -Command "& '%PYTHON_CMD%' -m uvicorn backend.main:app --reload"
+start powershell -NoExit -Command "$env:PYTHONPATH = 'C:\Users\SAM\Desktop\THE PORTMAN'; python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000"
 
 REM Start Next.js frontend
 start powershell -NoExit -Command "cd frontend; npx next dev"

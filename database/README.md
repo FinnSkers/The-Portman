@@ -1,10 +1,10 @@
 # PORTMAN Database
 
-This folder contains database schemas and configuration for PostgreSQL and Pinecone.
+This folder contains database schemas and configuration for PostgreSQL and ChromaDB.
 
 ## Structure
 - PostgreSQL: User data, CVs, analytics
-- Pinecone: Vector storage and semantic search
+- ChromaDB: Vector storage and semantic search
 
 ---
 

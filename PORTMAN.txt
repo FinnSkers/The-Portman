@@ -19,7 +19,7 @@ PORTMAN/
 ├── backend/              # FastAPI (Python) for API, business logic, and AI integration
 ├── frontend/             # Next.js (React) for SSR, SSG, and dynamic portfolio sites
 ├── ai-services/          # AI model integrations and pipelines
-├── database/             # PostgreSQL for structured data, Pinecone for vector search
+├── database/             # PostgreSQL for structured data, ChromaDB (default, open-source) or Pinecone (optional) for vector search
 ├── templates/            # Website templates (React/Next.js based)
 ├── docs/                 # Documentation
 └── scripts/              # Automation and utilities
@@ -51,12 +51,13 @@ GROQ_MODEL = 'llama-3.1-8b-instant'
 
 ### AI & ML
 - **RAG Pipeline:** Retrieval-augmented generation for professional comparison.
-- **Vector Embeddings:** Semantic search with Pinecone.
+- **Vector Embeddings:** Semantic search with ChromaDB (default, open-source) or Pinecone (optional, commercial).
 - **NLP Processing:** Advanced text extraction and analysis using DeepSeek-R1, Groq, and OpenRouter APIs.
 
 ### Database
 - **PostgreSQL:** For user data, CVs, and analytics.
-- **Pinecone:** For vector storage and semantic search.
+- **ChromaDB:** Default open-source vector storage and semantic search.
+- **Pinecone:** Optional commercial vector storage alternative.
 
 ### Other
 - **Auth0 or NextAuth.js:** Secure authentication.
@@ -82,9 +83,20 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [x] Support PDF, DOCX, and TXT file formats
 - [x] Validate and structure extracted data (AI-powered extraction, with fallback logic)
 - [x] Write unit and integration tests for parsing
+- [ ] Implement global error handling and logging (global logging and log viewer implemented)
+Enhancements:
+
+[ ] Further refine CV extraction to include additional ATS-specific fields (e.g., optimized keywords, standardized sections)
+
+[ ] Modularize the parsing service to directly feed into the ATS formatting pipeline
+
+[ ] Implement enhanced error handling and logging to capture extraction anomalies
+
+[ ] Expand file format support for edge case inputs and uncommon document types
+
 
 ### Milestone 2: RAG-Based Professional Comparison ✅ 100% COMPLETE
-- [x] Set up Pinecone for vector storage and semantic search
+- [x] Set up ChromaDB as the default open-source vector storage and semantic search
 - [x] Build RAG pipeline for comparing CVs with industry data
 - [x] Integrate professional datasets for benchmarking (comprehensive logic implemented)
 - [x] Generate actionable AI-driven suggestions (API returns benchmark and similar professionals)
@@ -95,11 +107,22 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [x] Build personalized career recommendation engine
 - [x] Add advanced RAG endpoints for detailed analysis
 - [x] Professional benchmarking with industry-specific skill requirements and salary ranges
-- [x] CV embedding storage with Pinecone integration and local fallback
 - [x] Industry analysis with growth rates, trending skills, and job outlook data
 - [x] Match scoring with weighted algorithm (skills 40%, projects 20%, etc.)
 - [x] Personalized recommendations with career advancement and networking strategies
 - [x] Comprehensive test suite with all endpoints validated
+- [x] Add open-source ChromaDB support for vector storage (now default, no vendor lock-in)
+- [ ] (Optional) Further backend/database integration, API enhancements, or user management/authentication features
+Enhancements:
+
+[ ] Integrate external real-time industry datasets to refine benchmarking insights
+
+[ ] Include salary and job market trend forecasting as part of the recommendations
+
+[ ] Allow interactive user adjustments to the benchmarking parameters via a dashboard feature
+
+[ ] Optimize the RAG pipeline with additional weighting algorithms and fine-tuned models
+
 
 ### Milestone 3: Dynamic Website Generation ✅ 100% COMPLETE
 - [x] Scaffold Next.js frontend for portfolio sites
@@ -110,20 +133,135 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [x] Implement template selection and customization
 - [x] Build CV upload and processing interface
 - [x] Create portfolio preview and generation system
+- [x] Modernize dashboard UI/UX for analysis and portfolio pages (cards, summary, collapsible sections, visual highlights)
+- [x] Ensure floating chat and pro tip buttons are always visible and on top (z-index fix)  
+Enhancements:
 
+[ ] Develop an integrated ATS-friendly resume maker that converts parsed JSON data into an optimized, plain-text/templated resume (DOCX/PDF)
+
+[ ] Add inline editing and preview options for the ATS-formatted resume
+
+[ ] Offer multiple ATS-friendly templates with a focus on keyword optimization and readability
+
+[ ] Use AI feedback (via the RAG pipeline) to suggest additional keyword optimizations and content refinements
+
+[ ] Implement a user-friendly interface for managing and exporting ATS-formatted resumes
+
+[ ] Add a feature to compare ATS resumes against industry standards and best practices
+
+[ ] Create a dedicated section in the dashboard for ATS resume management, including upload/download options
+
+[ ] Ensure the ATS resume maker is fully integrated with the existing CV parsing and RAG pipeline
+
+[ ] Implement comprehensive testing for the ATS resume maker, including unit tests and integration tests
+
+[ ] Add documentation and user guides for the ATS resume maker feature
+
+[ ] Ensure the ATS resume maker is responsive and works seamlessly across devices
+
+[ ] Add support for multiple languages in the ATS resume maker (optional)
+
+[ ] Implement user feedback mechanisms to continuously improve the ATS resume maker based on user needs
+
+[ ] Explore partnerships with ATS providers to ensure compatibility and best practices
+
+[ ] Consider adding a premium feature for advanced ATS resume optimization and feedback
 ### Milestone 4: User Management & Authentication
-- [ ] Integrate Auth0 or NextAuth.js for secure authentication
-- [ ] Implement user registration, login, and profile management (backend stubs present)
-- [ ] Secure API endpoints and user data
-- [ ] Add CSRF/XSS protection and security headers (optional, but recommended)
-- [ ] Ensure GDPR/data privacy compliance (user data export/delete, privacy policy) (optional, but recommended)
-- [ ] Add audit logging for sensitive actions (optional)
+- [x] Integrate Auth0 or NextAuth.js for secure authentication
+- [x] Implement user registration, login, and profile management (backend stubs present)
+- [x] Secure API endpoints and user data
+- [x] Add CSRF/XSS protection and security headers (optional, but recommended)
+- [x] Ensure GDPR/data privacy compliance (user data export/delete, privacy policy) (optional, but recommended)
+- [x] Add audit logging for sensitive actions (optional)
+Enhancements:
 
+[ ] Integrate OAuth for LinkedIn/GitHub syncing to enrich user profiles automatically
+
+[ ] Implement role-based access control (RBAC) for multi-tiered user permissions
+
+[ ] Enhance security by adding comprehensive JWT authentication and rate limiting
+
+[ ] Build a centralized dashboard for admins to monitor system access, API usage, and security logs
+
+[ ] Add user activity tracking and analytics to monitor engagement and feature usage
+
+[ ] Implement a user feedback system for continuous improvement based on user needs
+
+[ ] Create a user-friendly interface for managing account settings, privacy preferences, and data exports
+
+[ ] Ensure the user management system is scalable and can handle a growing user base
+
+[ ] Add support for multi-factor authentication (MFA) to enhance security
+
+[ ] Implement a password recovery and reset mechanism with secure email notifications
+
+[ ] Consider adding a referral program to incentivize user growth and engagement
+
+[ ] Explore partnerships with professional networks for enhanced user profile enrichment
+
+[ ] Add a user onboarding flow to guide new users through the platform's features and benefits
+
+[ ] Implement a community forum or discussion board for users to share experiences and tips
+
+[ ] Consider adding a premium subscription model for advanced features and analytics
+
+[ ] Ensure the user management system is fully documented with clear guidelines for developers and users
+
+[ ] Implement automated testing for user management features to ensure reliability and security
+
+[ ] Add localization support for multi-language user interfaces and documentation
+
+[ ] Explore integration with third-party identity providers for seamless user authentication
+
+[ ] Consider adding a mobile app version of the platform for on-the-go access and management
 ### Milestone 5: Real-Time Analytics & Collaboration
 - [ ] Integrate Plausible or Google Analytics for real-time tracking
 - [ ] Build analytics dashboard for users
 - [ ] Enable real-time collaboration using WebSockets
 - [ ] Add user feedback system (bug report, feature request, satisfaction survey) (optional)
+- [ ] Implement user roles and permissions for collaborative features (optional)
+- [ ] Add real-time notifications for important events (e.g., CV parsing complete, new suggestions) (optional)
+Enhancements:
+
+[ ] Introduce predictive analytics to forecast user engagement and portfolio performance
+
+[ ] Add interactive, real-time collaboration features for peer reviews or career coaching sessions
+
+[ ] Develop a system for live ATS score predictions and improvement suggestions
+
+[ ] Incorporate custom alerts and notifications based on user behavior and system events
+
+[ ] Implement a gamification system to encourage user engagement and completion of tasks
+
+[ ] Create a community leaderboard to showcase top users based on portfolio performance and engagement
+
+[ ] Add advanced filtering and segmentation options for analytics data
+
+[ ] Enable export of analytics data in various formats (CSV, JSON, etc.)
+
+[ ] Implement A/B testing capabilities for portfolio templates and features
+
+[ ] Develop a comprehensive API for third-party integrations with analytics data
+
+[ ] Ensure real-time analytics are optimized for performance and scalability
+
+[ ] Add support for multi-language analytics dashboards and reports
+
+[ ] Implement a feedback loop to continuously improve analytics features based on user needs
+
+[ ] Create detailed documentation and tutorials for users to understand and utilize analytics features effectively
+
+[ ] Explore partnerships with analytics providers for enhanced data insights and reporting capabilities
+
+[ ] Consider adding a mobile-friendly version of the analytics dashboard for on-the-go access
+
+[ ] Implement automated testing for analytics features to ensure reliability and accuracy
+
+[ ] Add support for custom analytics dashboards tailored to individual user needs
+
+[ ] Explore integration with popular data visualization tools for advanced analytics reporting
+
+[ ] Consider adding a premium analytics tier with advanced features and insights
 
 ### Milestone 6: Deployment & PWA Capabilities
 - [ ] Configure deployment pipelines (Vercel/AWS)
@@ -134,12 +272,76 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [ ] Add health check endpoints for backend (optional)
 - [ ] Implement automated backups for database and user data (optional)
 - [ ] Add uptime monitoring and alerting (optional)
+Enhancements:
 
+[ ] Streamline CI/CD workflows (e.g., GitHub Actions) for smooth continuous integration and delivery
+
+[ ] Enhance mobile responsiveness and performance for improved PWA experience
+
+[ ] Use performance monitoring and automated scaling policies to handle increased loads
+
+[ ] Implement proactive error and incident management protocols
+
+[ ] Add a staging environment for testing new features before production deployment
+
+[ ] Implement automated testing in the deployment pipeline to catch issues early
+
+[ ] Create a rollback mechanism for quick recovery from deployment failures
+
+[ ] Optimize PWA features for better offline capabilities and caching strategies
+
+[ ] Add support for custom domains and SSL certificates for user portfolios
+
+[ ] Implement a content delivery network (CDN) for faster global access
+
+[ ] Ensure compliance with web standards and best practices for accessibility and performance
+
+[ ] Create detailed deployment documentation for developers and users
+
+[ ] Implement a monitoring dashboard for real-time performance and error tracking
+
+[ ] Add support for multi-region deployments to improve latency and availability
+
+[ ] Explore integration with third-party services for enhanced PWA features (e.g., push notifications)
+
+[ ] Consider adding a premium hosting tier with advanced features and support
+
+[ ] Implement a user-friendly interface for managing deployment settings and configurations
+
+[ ] Ensure the deployment process is fully automated and requires minimal manual intervention
 ### Milestone 7: Documentation & Community
 - [ ] Write comprehensive user and developer documentation
 - [ ] Create contribution guidelines and code of conduct
 - [ ] Set up issue templates and project boards for tracking
 - [ ] Add onboarding/tutorial flow for new users (optional)
+
+Enhancements:
+
+[ ] Develop detailed API reference documentation with interactive examples (e.g., Swagger)
+
+[ ] Build an admin dashboard to manage users, analytics, and system health
+
+[ ] Create video tutorials and comprehensive guides to facilitate community contributions
+
+[ ] Establish community forums and support channels for active user engagement
+
+[ ] Implement a knowledge base with FAQs, troubleshooting tips, and best practices
+
+[ ] Encourage community contributions through hackathons, contests, or feature requests
+
+[ ] Create a feedback loop for continuous improvement based on user suggestions and needs
+
+[ ] Develop a comprehensive changelog to track project evolution and updates
+
+[ ] Ensure documentation is regularly updated and reflects the latest features and changes
+
+[ ] Add localization support for documentation to reach a wider audience
+
+[ ] Implement a versioning system for documentation to maintain clarity across releases
+
+[ ] Explore partnerships with educational institutions or professional networks for wider reach
+
+[ ] Consider adding a community-driven content section for user-generated tutorials and guides
 
 ### Further Expansion Ideas
 - [x] Enhance AI extraction to support more CV fields (education, experience, phone, address, languages, certifications, links, summary, etc.)
@@ -161,7 +363,37 @@ The roadmap below breaks down the project into detailed, trackable milestones an
 - [ ] Add support for custom domain and SSL (optional)
 - [ ] Add API versioning and deprecation policy (optional)
 - [ ] Add support for mobile/responsive PWA enhancements (optional)
+- [x] Persistent floating help/chat/pro tip UI for user guidance (always on top, dismissible)
+- [x] Open-source vector DB (ChromaDB) support for RAG pipeline (now default, no vendor lock-in)
+- [ ] [Optional] Remove Pinecone-specific code for a 100% open-source stack
 
+Enhancements:
+
+[ ] Develop detailed API reference documentation with interactive examples (e.g., Swagger)
+
+[ ] Build an admin dashboard to manage users, analytics, and system health
+
+[ ] Create video tutorials and comprehensive guides to facilitate community contributions
+
+[ ] Establish community forums and support channels for active user engagement
+
+[ ] Implement a knowledge base with FAQs, troubleshooting tips, and best practices
+
+[ ] Encourage community contributions through hackathons, contests, or feature requests
+
+[ ] Create a feedback loop for continuous improvement based on user suggestions and needs
+
+[ ] Develop a comprehensive changelog to track project evolution and updates
+
+[ ] Ensure documentation is regularly updated and reflects the latest features and changes
+
+[ ] Add localization support for documentation to reach a wider audience
+
+[ ] Implement a versioning system for documentation to maintain clarity across releases
+
+[ ] Explore partnerships with educational institutions or professional networks for wider reach
+
+[ ] Consider adding a community-driven content section for user-generated tutorials and guides
 ---
 
 **Progress Tracking:**  

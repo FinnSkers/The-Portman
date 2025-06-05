@@ -1,31 +1,28 @@
-# Pinecone and RAG integration utilities for PORTMAN
+# ChromaDB and RAG integration utilities for PORTMAN
 import os
 from typing import List, Dict
-import pinecone
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "your-pinecone-api-key")
-PINECONE_INDEX = os.getenv("PINECONE_INDEX", "portman-cv-index")
-PINECONE_REGION = os.getenv("PINECONE_REGION", "us-east-1")
-
-# Initialize Pinecone (lazy loading)
-def _get_pinecone_index():
+# Initialize ChromaDB (lazy loading)
+def _get_chroma_collection():
     try:
-        pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_REGION)
-        
-        # Ensure index exists
-        if PINECONE_INDEX not in pinecone.list_indexes():
-            pinecone.create_index(
-                name=PINECONE_INDEX,
-                dimension=1536,
-                metric="cosine"
-            )
-        return pinecone.Index(PINECONE_INDEX)
+        import chromadb
+        from chromadb.config import Settings
+
+        # Initialize ChromaDB
+        client = chromadb.Client(Settings(
+            chroma_db_impl="duckdb+parquet",
+            persist_directory="chroma_db"
+        ))
+
+        # Create or get the collection
+        collection = client.get_or_create_collection("portman_cv_collection")
+        return collection
     except Exception as e:
-        print(f"Warning: Could not connect to Pinecone: {e}")
+        print(f"Warning: Could not connect to ChromaDB: {e}")
         return None
 
 def upsert_cv_embedding(user_id: str, embedding: List[float]):
@@ -37,26 +34,34 @@ def upsert_cv_embedding(user_id: str, embedding: List[float]):
         else:
             embedding = embedding[:1536]
     
-    # Upsert the user's CV embedding into Pinecone
+    # Upsert the user's CV embedding into ChromaDB
     try:
-        index = _get_pinecone_index()
-        if index is None:
-            return {"error": "Pinecone not available"}
-        index.upsert(vectors=[{"id": user_id, "values": embedding}])
+        collection = _get_chroma_collection()
+        if collection is None:
+            return {"error": "ChromaDB not available"}
+        collection.add(
+            ids=[user_id],
+            documents=[user_id],
+            embeddings=[embedding],
+            metadatas=[{"user_id": user_id}]
+        )
         return {"upserted": user_id}
     except Exception as e:
         return {"error": f"Failed to upsert: {str(e)}"}
 
 def query_similar_professionals(embedding: List[float], top_k: int = 5) -> dict:
-    # Query Pinecone for similar professionals
+    # Query ChromaDB for similar professionals
     try:
-        index = _get_pinecone_index()
-        if index is None:
-            return {"error": "Pinecone not available"}
-        results = index.query(vector=embedding, top_k=top_k, include_metadata=True)
+        collection = _get_chroma_collection()
+        if collection is None:
+            return {"error": "ChromaDB not available"}
+        results = collection.query(
+            query_embeddings=[embedding],
+            n_results=top_k
+        )
         return {"results": str(results)}
     except Exception as e:
-        return {"error": f"Could not query Pinecone: {str(e)}"}
+        return {"error": f"Could not query ChromaDB: {str(e)}"}
 
 def get_professional_benchmark(cv_data: Dict) -> Dict:
     # Placeholder: In production, compare with real professional datasets
@@ -80,20 +85,25 @@ def store_cv_embedding(cv_data: dict) -> dict:
             'text': cv_text[:500]  # Truncate for storage
         }
         
-        if pinecone_available:
-            try:
-                # Store in Pinecone
-                cv_id = f"cv_{hash(cv_text) % 2**32}"
-                index.upsert(vectors=[(cv_id, embedding, metadata)])
-                
-                return {
-                    'status': 'success',
-                    'storage_method': 'pinecone',
-                    'cv_id': cv_id,
-                    'embedding_dimension': len(embedding)
-                }
-            except Exception as e:
-                print(f"Pinecone storage failed: {e}")
+        # Store in ChromaDB
+        try:
+            cv_id = f"cv_{hash(cv_text) % 2**32}"
+            collection = _get_chroma_collection()
+            collection.add(
+                ids=[cv_id],
+                documents=[cv_id],
+                embeddings=[embedding],
+                metadatas=[metadata]
+            )
+            
+            return {
+                'status': 'success',
+                'storage_method': 'chroma_db',
+                'cv_id': cv_id,
+                'embedding_dimension': len(embedding)
+            }
+        except Exception as e:
+            print(f"ChromaDB storage failed: {e}")
         
         # Fallback storage
         return {

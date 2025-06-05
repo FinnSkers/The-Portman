@@ -5,7 +5,7 @@ PORTMAN is an AI-powered platform that transforms CVs into personalized, respons
 ## 🚀 Features
 
 - **AI-Powered CV Parsing:** Extract structured data from PDF, DOCX, and TXT files using DeepSeek-R1, Groq, and OpenRouter APIs.
-- **RAG-Enhanced Analysis:** Compare CVs with industry professionals using retrieval-augmented generation and Pinecone vector search.
+- **RAG-Enhanced Analysis:** Compare CVs with industry professionals using retrieval-augmented generation and ChromaDB vector search.
 - **Automated Website Generation:** Instantly create responsive, modern portfolio websites with template selection.
 - **Professional Benchmarking:** Receive AI-driven suggestions by comparing your profile with top professionals in your field.
 - **Multi-Format Support:** Handle various CV formats with intelligent preprocessing.
@@ -19,7 +19,7 @@ PORTMAN/
 ├── backend/              # FastAPI (Python) for API, business logic, and AI integration
 ├── frontend/             # Next.js (React) for SSR, SSG, and dynamic portfolio sites
 ├── ai-services/          # AI model integrations and pipelines
-├── database/             # PostgreSQL for structured data, Pinecone for vector search
+├── database/             # PostgreSQL for structured data, ChromaDB for vector search
 ├── templates/            # Website templates (React/Next.js based)
 ├── docs/                 # Documentation
 └── scripts/              # Automation and utilities
@@ -29,7 +29,7 @@ PORTMAN/
 
 - **Backend:** FastAPI (Python), Celery, PostgreSQL
 - **Frontend:** Next.js (React), Tailwind CSS, Three.js/React Three Fiber (planned)
-- **AI & ML:** DeepSeek-R1, Groq, OpenRouter, Pinecone, RAG pipeline
+- **AI & ML:** DeepSeek-R1, Groq, OpenRouter, ChromaDB, RAG pipeline
 - **Other:** Auth0/NextAuth.js (planned), Vercel/AWS, Plausible/Google Analytics (planned)
 
 ## 📝 Usage
@@ -74,7 +74,7 @@ PORTMAN/
 - `backend/` — FastAPI app, AI integration, and business logic
 - `frontend/` — Next.js app, React components, Tailwind CSS
 - `ai-services/` — Model integration and pipelines
-- `database/` — PostgreSQL and Pinecone setup
+- `database/` — PostgreSQL and ChromaDB setup
 - `templates/` — Portfolio templates
 - `docs/` — Documentation
 - `scripts/` — Utilities and automation
@@ -102,5 +102,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - DeepSeek AI for advanced reasoning capabilities
 - Groq for fast inference
 - OpenRouter for multi-model API access
-- Pinecone for vector search
+- ChromaDB for vector search
 - The open-source community for inspiration and tools

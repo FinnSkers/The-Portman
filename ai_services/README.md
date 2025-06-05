@@ -4,7 +4,7 @@ This folder contains AI model integrations and pipelines for CV parsing, RAG-bas
 
 ## Structure
 - `cv_ai.py`: Integrates DeepSeek-R1, Groq, and OpenRouter APIs for CV parsing.
-- `vector_rag.py`: Handles vector embedding, Pinecone integration, and RAG pipeline for professional comparison.
+- `vector_rag.py`: Handles vector embedding and RAG pipeline for professional comparison (ChromaDB-based).
 
 ## Usage
 - Import `parse_cv_with_ai` from `ai-services/cv_ai.py` in your backend for AI-powered CV parsing.
