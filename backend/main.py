@@ -7,7 +7,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exception_handlers import http_exception_handler
 from dotenv import load_dotenv
 import logging
-from fastapi.middleware.gzip import GZipMiddleware, GZipMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
@@ -31,7 +31,7 @@ app = FastAPI(
 # CORS for modern web apps
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("CORS_ALLOW_ORIGINS", "*")],
+    allow_origins=os.getenv("CORS_ALLOW_ORIGINS", "*").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,6 +66,7 @@ Base.metadata.create_all(bind=engine)
 # --- HEALTH CHECK ---
 @app.get("/healthz", tags=["system"])
 def health_check():
+    """Health check endpoint."""
     return {"status": "ok"}
 
 # --- API VERSIONING ---
@@ -74,6 +75,7 @@ api_v1_router = APIRouter(prefix="/api/v1")
 
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """Custom exception handler for HTTP exceptions."""
     if exc.status_code == 405:
         return JSONResponse(
             status_code=405,
@@ -83,6 +85,7 @@ async def custom_http_exception_handler(request: Request, exc: StarletteHTTPExce
 
 @app.get("/")
 async def root():
+    """Root endpoint providing API information."""
     return {
         "message": "PORTMAN API - Modern AI-Powered Portfolio Maker",
         "version": "2.0.0",
