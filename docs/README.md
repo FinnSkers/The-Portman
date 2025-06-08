@@ -1,6 +1,6 @@
 <img src="https://github.com/FinnSkers/The-Portman/blob/main/PORTMAN_LOGO.png" width="320"/>
 
-
+https://portman-3cjlwpeph-finnskers-projects.vercel.app/
 # PORTMAN - The Portfolio Maker
 
 PORTMAN is an AI-powered platform that transforms CVs into personalized, responsive portfolio websites. It leverages advanced AI parsing, retrieval-augmented generation (RAG) for professional benchmarking, and modern web technologies to streamline personal branding and career growth.
