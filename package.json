@@ -1,0 +1,43 @@
+{
+  "name": "portman",
+  "version": "1.0.0",
+  "description": "AI-Powered Professional Portfolio & Resume Builder",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt",
+    "test": "cd backend && python -m pytest && cd ../frontend && npm test",
+    "setup": "cd backend && python init_database.py && python create_admin.py"
+  },
+  "keywords": [
+    "ai",
+    "portfolio",
+    "resume",
+    "cv",
+    "builder",
+    "fastapi",
+    "nextjs",
+    "typescript"
+  ],
+  "author": "PORTMAN Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/portman.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/portman/issues"
+  },
+  "homepage": "https://github.com/yourusername/portman#readme"
+}
