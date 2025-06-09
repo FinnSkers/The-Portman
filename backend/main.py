@@ -9,9 +9,8 @@ from dotenv import load_dotenv
 import logging
 from fastapi.middleware.gzip import GZipMiddleware
 from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from database import engine, SessionLocal, Base
 
 # Add the parent directory to sys.path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -44,12 +43,6 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger = logging.getLogger("portman-backend")
 
-# --- DATABASE SETUP ---
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./portman.db")
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
 # --- USER MODEL ---
 class User(Base):
     __tablename__ = "users"
@@ -60,6 +53,8 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    reset_token = Column(String, nullable=True)
+    reset_token_expires_at = Column(DateTime, nullable=True)
 
 Base.metadata.create_all(bind=engine)
 
@@ -101,13 +96,14 @@ async def root():
     }
 
 # Import and include routers
-from backend.cv import router as cv_router
-from backend.users import router as users_router
-from backend.portfolio import router as portfolio_router
-from backend.advanced_rag import router as rag_router
-from backend.logs import router as logs_router
-from backend.ats_resume import router as ats_router
-from backend.analytics import router as analytics_router
+from cv import router as cv_router
+from users import router as users_router
+from portfolio import router as portfolio_router
+from advanced_rag import router as rag_router
+from logs import router as logs_router
+from ats_resume import router as ats_router
+from analytics import router as analytics_router
+from system_health import router as system_health_router
 
 # Add routers to api_v1_router instead of app
 api_v1_router.include_router(cv_router)
@@ -117,6 +113,9 @@ api_v1_router.include_router(portfolio_router)
 api_v1_router.include_router(logs_router)
 api_v1_router.include_router(ats_router)
 api_v1_router.include_router(analytics_router)
+
+# Add system health router directly to app (not under /api/v1)
+app.include_router(system_health_router)
 app.include_router(api_v1_router)
 
 # Remove all __pycache__ and .pyc files from version control and deployment

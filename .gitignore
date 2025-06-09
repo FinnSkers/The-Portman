@@ -100,3 +100,30 @@ tmp/
 # AI model files
 *.pkl
 *.model
+
+# Test files and temporary data
+test_*.py
+test_*.js
+comprehensive_*.py
+integration_*.js
+
+# Archive and backup files
+archive/
+scripts/legacy/
+*.bak
+*.backup
+
+# Generated portfolios and resumes
+generated_portfolios/
+generated_resumes/
+parsed_cv.json
+
+# Documentation files (keep README.md)
+*.md
+!README.md
+!CHANGELOG.md
+!CONTRIBUTING.md
+
+# Progress and status files
+*.txt
+!requirements.txt

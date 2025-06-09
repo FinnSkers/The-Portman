@@ -3,13 +3,20 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Brain, Upload, BarChart3, Target, Briefcase, Moon, Sun } from 'lucide-react'
+import { Menu, X, Brain, Upload, BarChart3, Target, Briefcase, Moon, Sun, LogIn, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { useAuth } from '@/contexts/AuthContext'
+import { UserMenu } from '@/components/auth/UserMenu'
+import { AuthModal } from '@/components/auth/AuthModal'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login')
+  
+  const { isAuthenticated, loading } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +29,11 @@ export default function Navigation() {
   const toggleTheme = () => {
     setIsDark(!isDark)
     document.documentElement.classList.toggle('dark')
+  }
+
+  const openAuthModal = (mode: 'login' | 'signup') => {
+    setAuthModalMode(mode)
+    setAuthModalOpen(true)
   }
 
   const navItems = [
@@ -58,9 +70,7 @@ export default function Navigation() {
                 </Link>
               )
             })}
-          </div>
-
-          {/* Desktop Actions */}
+          </div>          {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <Button
               variant="ghost"
@@ -70,9 +80,31 @@ export default function Navigation() {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Button variant="cyber" className="rounded-full">
-              Get Started
-            </Button>
+            
+            {loading ? (
+              <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+            ) : isAuthenticated ? (
+              <UserMenu />
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => openAuthModal('login')}
+                  className="text-white hover:bg-white/10"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+                <Button
+                  variant="cyber"
+                  onClick={() => openAuthModal('signup')}
+                  className="rounded-full"
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Get Started
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -120,16 +152,45 @@ export default function Navigation() {
                     <span className="text-foreground">{item.name}</span>
                   </Link>
                 )
-              })}
-              <div className="pt-4">
-                <Button variant="cyber" className="w-full rounded-full">
-                  Get Started
-                </Button>
+              })}              <div className="pt-4 space-y-2">
+                {loading ? (
+                  <div className="flex justify-center">
+                    <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                  </div>
+                ) : isAuthenticated ? (
+                  <UserMenu />
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => openAuthModal('login')}
+                      className="w-full rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10"
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Sign In
+                    </Button>
+                    <Button
+                      variant="cyber"
+                      onClick={() => openAuthModal('signup')}
+                      className="w-full rounded-full"
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultMode={authModalMode}
+      />
     </nav>
   )
 }

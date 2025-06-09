@@ -6,3 +6,5 @@ python-docx
 requests
 pydantic
 chromadb
+psutil
+sqlalchemy

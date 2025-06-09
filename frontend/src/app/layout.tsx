@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import StatusPopup from "@/components/StatusPopup";
+import ModernStatusPopup from "@/components/ModernStatusPopup";
 import ThemeToggle from "../components/ThemeToggle";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -14,7 +15,11 @@ export const metadata: Metadata = {
   description: "Transform your career journey with PORTMAN's cutting-edge AI technology. Upload CVs, get intelligent insights, benchmark against industry standards, and generate stunning portfolios.",
   keywords: ["AI", "career", "CV", "resume", "portfolio", "professional", "job search", "analytics"],
   authors: [{ name: "PORTMAN Team" }],
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -25,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className={`${inter.className} antialiased`}>
-        <ThemeToggle />
-        <StatusPopup />
-        {children}
+        <AuthProvider>
+          <ThemeToggle />
+          <ModernStatusPopup/>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
