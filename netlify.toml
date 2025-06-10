@@ -2,8 +2,8 @@
   # Build command (no cd needed since base is already frontend)
   command = "npm run build"
   
-  # Output directory
-  publish = ".next"
+  # Output directory (Next.js static export outputs to 'out' directory)
+  publish = "out"
   
   # Base directory
   base = "frontend"
@@ -18,7 +18,19 @@
   # Production environment
   NODE_ENV = "production"
 
-# Next.js routing
+# Next.js specific configuration
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+# SPA fallback for client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -36,7 +48,7 @@
 
 # Cache static assets
 [[headers]]
-  for = "/static/*"
+  for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

@@ -2,7 +2,7 @@
 
 Complete guide to deploy your PORTMAN application to Netlify with automatic deployments.
 
-## 🚀 Quick Deploy
+## 🚀 Quick Deploy (Updated Configuration)
 
 ### Method 1: One-Click Deploy (Recommended)
 
@@ -31,8 +31,33 @@ Complete guide to deploy your PORTMAN application to Netlify with automatic depl
 
 3. **Deploy to Netlify:**
    ```powershell
-   netlify deploy --prod --dir=.next
+   netlify deploy --prod --dir=out
    ```
+
+## ✅ Updated Configuration
+
+### Next.js Configuration (`frontend/next.config.ts`):
+```typescript
+const nextConfig: NextConfig = {
+  output: 'export',           // Static export for Netlify
+  trailingSlash: true,        // Better URL handling
+  images: { unoptimized: true }, // Required for static export
+  // ... other config
+};
+```
+
+### Netlify Configuration (`netlify.toml`):
+```toml
+[build]
+  command = "npm run build"
+  publish = "out"             # Next.js static export output
+  base = "frontend"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+```
 
 ## 🔧 Environment Variables
 

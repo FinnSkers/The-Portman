@@ -1,0 +1,12 @@
+# SPA fallback for client-side routing
+/*    /index.html   200
+
+# API fallback - redirect API calls to the backend
+/api/*  https://your-backend-api.com/api/v1/:splat  200!
+
+# Specific redirects for known routes
+/admin  /admin/index.html  200
+/auth   /auth/index.html   200
+/dashboard  /dashboard/index.html  200
+/upload /upload/index.html  200
+/results  /results/index.html  200

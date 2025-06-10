@@ -24,7 +24,7 @@ npm run build
 echo.
 echo 🌐 Deploying to Netlify...
 echo    Note: This will create a new site or deploy to existing one
-netlify deploy --prod --dir=.next
+netlify deploy --prod --dir=out
 
 echo.
 echo ✅ Deployment completed!
