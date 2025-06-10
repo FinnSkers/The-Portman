@@ -40,9 +40,9 @@ export default function UploadPage() {  const [file, setFile] = useState<File | 
   const [error, setError] = useState('')
   const [dragActive, setDragActive] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-
   const handleFileSelect = (selectedFile: File) => {
-    setFile(selectedFile)    setError('')
+    setFile(selectedFile)
+    setError('')
     setUploadComplete(false)
     setParsedData(null)
     setProfileUpdated(false)

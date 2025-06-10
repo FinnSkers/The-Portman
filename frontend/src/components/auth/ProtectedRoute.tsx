@@ -78,9 +78,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             <div className="mx-auto w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mb-4">
               <Shield className="h-6 w-6 text-amber-400" />
             </div>
-            <CardTitle className="text-xl text-white">Admin Access Required</CardTitle>
-            <CardDescription className="text-gray-300">
-              You don't have permission to access this page
+            <CardTitle className="text-xl text-white">Admin Access Required</CardTitle>            <CardDescription className="text-gray-300">
+              You don&apos;t have permission to access this page
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

@@ -34,8 +34,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
 
     try {
       await forgotPassword(email)
-      setIsSubmitted(true)
-    } catch (err) {
+      setIsSubmitted(true)    } catch (error) {
       setError('Failed to send reset email. Please try again.')
     } finally {
       setIsLoading(false)

@@ -11,25 +11,20 @@ import {
   AlertTriangle,
   CheckCircle,
   XCircle,
-  MoreHorizontal,
   Search,
   Filter,
   Download,
   Plus,
   Edit3,
   Trash2,
-  Eye,
   UserCheck,
   UserX,
   Crown,
   Mail,
-  Calendar,
   BarChart3,
-  TrendingUp,
   Server,
   HardDrive,
-  Cpu,
-  Wifi
+  Cpu
 } from 'lucide-react'
 import { ProtectedRoute, useAuth } from '@/components/auth/AuthComponent'
 import { Button } from '@/components/ui/Button'
@@ -37,12 +32,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
 
+// Types
+interface AdminUser {
+  id: string
+  username: string
+  email: string
+  is_admin: boolean
+  is_active: boolean
+  created_at: string
+}
+
 // Admin stats card component
 const AdminStatsCard = ({ title, value, change, icon: Icon, color = 'blue' }: {
   title: string
   value: string
   change: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   color?: string
 }) => (
   <motion.div
@@ -71,8 +76,8 @@ const AdminStatsCard = ({ title, value, change, icon: Icon, color = 'blue' }: {
 
 // User management row component
 const UserRow = ({ user, onEdit, onDelete, onToggleStatus }: {
-  user: any
-  onEdit: (user: any) => void
+  user: AdminUser
+  onEdit: (user: AdminUser) => void
   onDelete: (userId: string) => void
   onToggleStatus: (userId: string) => void
 }) => (
@@ -197,9 +202,8 @@ export default function AdminPage() {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const [searchTerm, setSearchTerm] = useState('')
-
   // Mock user data
-  const mockUsers = [
+  const mockUsers: AdminUser[] = [
     {
       id: '1',
       username: 'admin',
@@ -226,7 +230,7 @@ export default function AdminPage() {
     }
   ]
 
-  const handleEditUser = (user: any) => {
+  const handleEditUser = (user: AdminUser) => {
     console.log('Edit user:', user)
     // TODO: Implement user editing
   }

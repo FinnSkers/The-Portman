@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, Users, BarChart3, Settings } from 'lucide-react'
+import { Shield, Users, BarChart3 } from 'lucide-react'
 import { AuthModal, useAuth } from '@/components/auth/AuthComponent'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'

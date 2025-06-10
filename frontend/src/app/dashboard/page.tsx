@@ -6,7 +6,6 @@ import {
   BarChart3, 
   FileText, 
   Upload, 
-  Users, 
   Settings, 
   TrendingUp,
   Activity,
@@ -16,7 +15,6 @@ import {
   Filter,
   Download,
   Eye,
-  Edit3,
   Trash2,
   Plus
 } from 'lucide-react'
@@ -31,7 +29,7 @@ const StatsCard = ({ title, value, change, icon: Icon, color = 'blue' }: {
   title: string
   value: string
   change: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   color?: string
 }) => (
   <motion.div

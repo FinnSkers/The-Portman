@@ -215,7 +215,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, onForgot
 
           <motion.div variants={itemVariants} className="text-center">
             <p className="text-gray-400">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 type="button"
                 onClick={onSwitchToSignup}
