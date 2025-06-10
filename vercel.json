@@ -1,33 +1,14 @@
 {
   "version": 2,
   "name": "portman",
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    }
-  ],
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/.next",
+  "installCommand": "cd frontend && npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
   "env": {
     "NEXT_PUBLIC_SITE_URL": "@portman-site-url",
-    "NEXT_PUBLIC_API_URL": "@portman-api-url"
-  },
-  "build": {
-    "env": {
-      "NEXT_TELEMETRY_DISABLED": "1"
-    }
-  },
-  "functions": {
-    "frontend/app/**/*.tsx": {
-      "maxDuration": 30
-    }
-  },
-  "regions": ["iad1"],
-  "framework": "nextjs",
-  "outputDirectory": "frontend/.next"
+    "NEXT_PUBLIC_API_URL": "@portman-api-url",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
 }
