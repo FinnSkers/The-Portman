@@ -4,7 +4,7 @@
 
 ## 🚀 Overview
 
-PORTMAN is a modern, AI-powered platform that transforms CVs and resumes into stunning professional portfolios and optimized documents. Built with cutting-edge technology and featuring a sleek dashboard interface.
+PORTMAN is a modern, AI-powered platform that transforms CVs and resumes into stunning professional portfolios and optimized documents. Built with cutting-edge technology and featuring automatic deployment to Vercel.
 
 ## ✨ Features
 
@@ -13,7 +13,8 @@ PORTMAN is a modern, AI-powered platform that transforms CVs and resumes into st
 - **ATS Optimization**: Resume optimization for Applicant Tracking Systems
 - **Modern Dashboard**: Compact, responsive interface with real-time status monitoring
 - **Document Processing**: Support for multiple file formats (PDF, DOCX, TXT)
-- **User Authentication**: Secure login system with admin controls
+- **User Authentication**: Secure login system with profile management
+- **Auto Deployment**: Automatic deployment to Vercel on GitHub push
 - **Real-time Status**: Live system health monitoring and processing queues
 
 ## 🛠️ Technology Stack
@@ -24,6 +25,7 @@ PORTMAN is a modern, AI-powered platform that transforms CVs and resumes into st
 - **Tailwind CSS** - Modern styling with custom components
 - **Framer Motion** - Smooth animations and transitions
 - **Lucide React** - Beautiful icons
+- **Vercel** - Production deployment platform
 
 ### Backend
 - **FastAPI** - High-performance Python web framework

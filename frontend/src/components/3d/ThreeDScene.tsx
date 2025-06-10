@@ -61,8 +61,8 @@ export default function ThreeDScene() {
     }
   }
 
-  // Handle click on sphere
-  const handleClick = () => {
+  // Handle click on sphere - trigger file input
+  const handleSphereClick = () => {
     if (inputRef.current) inputRef.current.click()
   }
 
@@ -87,7 +87,6 @@ export default function ThreeDScene() {
     if (e.type === 'dragenter' || e.type === 'dragover') setDragActive(true)
     else if (e.type === 'dragleave') setDragActive(false)
   }
-
   return (
     <div
       className={`h-full w-full flex items-center justify-center relative cursor-pointer select-none ${dragActive ? 'ring-4 ring-blue-400/70 ring-offset-2' : ''}`}
@@ -95,6 +94,7 @@ export default function ThreeDScene() {
       onDragOver={handleDrag}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
+      onClick={handleSphereClick}
     >
       <input
         type="file"

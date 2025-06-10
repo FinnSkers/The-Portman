@@ -1,13 +1,8 @@
 # Handles user registration, login, and profile endpoints (stubs)
 from fastapi import APIRouter, HTTPException, Depends, status
-from sqlalchemy import Column, Integer, String, Boolean, create_engine, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from passlib.context import CryptContext
-from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict, Any
 import os
 import secrets
 import smtplib
@@ -15,34 +10,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from pydantic import BaseModel
 from auth_utils import verify_password, get_password_hash, create_access_token, get_current_user, get_current_admin_user
-import secrets
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import json
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
-Base = declarative_base()
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean, default=True)
-    is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    reset_token = Column(String, nullable=True)
-    reset_token_expires_at = Column(DateTime, nullable=True)
-
-Base.metadata.create_all(bind=engine)
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+# Import database components from main.py to avoid conflicts
+from main import User, SessionLocal
 
 def get_db():
     db = SessionLocal()
@@ -68,6 +39,9 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
+
+class UpdateProfileWithCVRequest(BaseModel):
+    parsed_data: Dict[str, Any]
 
 def generate_reset_token():
     """Generate a secure random token for password reset"""
@@ -252,3 +226,93 @@ async def get_all_users(db=Depends(get_db), current_user: User = Depends(get_cur
         }
         for user in users
     ]
+
+@router.put("/update-profile-from-cv/")
+async def update_profile_from_cv(
+    payload: UpdateProfileWithCVRequest, 
+    current_user: User = Depends(get_current_user),
+    db=Depends(get_db)
+):
+    """Update user profile with parsed CV data"""
+    try:
+        parsed_data = payload.parsed_data
+          # Update user fields with parsed CV data
+        if parsed_data.get('name'):
+            setattr(current_user, 'full_name', parsed_data['name'])
+        if parsed_data.get('phone'):
+            setattr(current_user, 'phone', parsed_data['phone'])
+        if parsed_data.get('address'):
+            setattr(current_user, 'address', parsed_data['address'])
+        if parsed_data.get('summary'):
+            setattr(current_user, 'summary', parsed_data['summary'])
+        
+        # Store complex data as JSON strings
+        if parsed_data.get('experience'):
+            setattr(current_user, 'experience_json', json.dumps(parsed_data['experience']))
+        if parsed_data.get('education'):
+            setattr(current_user, 'education_json', json.dumps(parsed_data['education']))
+        if parsed_data.get('skills'):
+            setattr(current_user, 'skills_json', json.dumps(parsed_data['skills']))
+        if parsed_data.get('languages'):
+            setattr(current_user, 'languages_json', json.dumps(parsed_data['languages']))
+        if parsed_data.get('certifications'):
+            setattr(current_user, 'certifications_json', json.dumps(parsed_data['certifications']))
+        if parsed_data.get('links'):
+            setattr(current_user, 'links_json', json.dumps(parsed_data['links']))
+        
+        # Update timestamp        setattr(current_user, 'cv_updated_at', datetime.utcnow())
+        
+        # Commit changes
+        db.commit()
+        db.refresh(current_user)
+        
+        return {
+            "message": "Profile updated successfully with CV data",
+            "updated_fields": {
+                "name": getattr(current_user, 'full_name', None),
+                "phone": getattr(current_user, 'phone', None),
+                "address": getattr(current_user, 'address', None),
+                "summary": getattr(current_user, 'summary', None),
+                "cv_updated_at": getattr(current_user, 'cv_updated_at', None)
+            }
+        }
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to update profile: {str(e)}"
+        )
+
+@router.get("/profile/")
+async def get_user_profile(current_user: User = Depends(get_current_user)):
+    """Get user profile including CV data"""
+    try:
+        profile_data = {
+            "id": current_user.id,
+            "username": current_user.username,
+            "email": current_user.email,
+            "is_active": current_user.is_active,
+            "is_admin": current_user.is_admin,
+            "created_at": current_user.created_at,            "cv_data": {
+                "full_name": getattr(current_user, 'full_name', None),
+                "phone": getattr(current_user, 'phone', None),
+                "address": getattr(current_user, 'address', None),
+                "summary": getattr(current_user, 'summary', None),
+                "experience": json.loads(getattr(current_user, 'experience_json', '[]')) if getattr(current_user, 'experience_json', None) else [],
+                "education": json.loads(getattr(current_user, 'education_json', '[]')) if getattr(current_user, 'education_json', None) else [],
+                "skills": json.loads(getattr(current_user, 'skills_json', '[]')) if getattr(current_user, 'skills_json', None) else [],
+                "languages": json.loads(getattr(current_user, 'languages_json', '[]')) if getattr(current_user, 'languages_json', None) else [],
+                "certifications": json.loads(getattr(current_user, 'certifications_json', '[]')) if getattr(current_user, 'certifications_json', None) else [],
+                "links": json.loads(getattr(current_user, 'links_json', '[]')) if getattr(current_user, 'links_json', None) else [],
+                "cv_updated_at": getattr(current_user, 'cv_updated_at', None)
+            }
+        }
+        
+        return profile_data
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve profile: {str(e)}"
+        )

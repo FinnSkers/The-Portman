@@ -55,6 +55,32 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     reset_token = Column(String, nullable=True)
     reset_token_expires_at = Column(DateTime, nullable=True)
+    
+    # CV Data fields
+    full_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    summary = Column(String, nullable=True)
+    experience_json = Column(String, nullable=True)  # JSON string of experience array
+    education_json = Column(String, nullable=True)   # JSON string of education array
+    skills_json = Column(String, nullable=True)      # JSON string of skills array
+    languages_json = Column(String, nullable=True)   # JSON string of languages array
+    certifications_json = Column(String, nullable=True)  # JSON string of certifications array
+    links_json = Column(String, nullable=True)       # JSON string of links array
+    cv_updated_at = Column(DateTime, nullable=True)  # Track when CV data was last updated
+    
+    # CV Data fields
+    full_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    summary = Column(String, nullable=True)
+    experience_json = Column(String, nullable=True)  # JSON string of experience array
+    education_json = Column(String, nullable=True)   # JSON string of education array
+    skills_json = Column(String, nullable=True)      # JSON string of skills array
+    languages_json = Column(String, nullable=True)   # JSON string of languages array
+    certifications_json = Column(String, nullable=True)  # JSON string of certifications array
+    links_json = Column(String, nullable=True)       # JSON string of links array
+    cv_updated_at = Column(DateTime, nullable=True)  # Track when CV data was last updated
 
 Base.metadata.create_all(bind=engine)
 

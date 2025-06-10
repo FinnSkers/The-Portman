@@ -1,21 +1,21 @@
 {
   "version": 2,
-  "name": "portman-frontend",
+  "name": "portman",
   "builds": [
     {
-      "src": "package.json",
+      "src": "frontend/package.json",
       "use": "@vercel/next"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/frontend/$1"
     }
   ],
   "env": {
-    "NEXT_PUBLIC_SITE_URL": "https://portman.vercel.app",
-    "NEXT_PUBLIC_API_URL": "https://your-backend-api.com/api/v1"
+    "NEXT_PUBLIC_SITE_URL": "@portman-site-url",
+    "NEXT_PUBLIC_API_URL": "@portman-api-url"
   },
   "build": {
     "env": {
@@ -23,10 +23,11 @@
     }
   },
   "functions": {
-    "app/**/*.tsx": {
+    "frontend/app/**/*.tsx": {
       "maxDuration": 30
     }
   },
   "regions": ["iad1"],
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "outputDirectory": "frontend/.next"
 }

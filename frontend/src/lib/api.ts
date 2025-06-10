@@ -115,3 +115,15 @@ export async function parseCV(filename: string) {
     body: JSON.stringify({ filename }),
   });
 }
+
+// User Profile API methods
+export async function updateProfileFromCV(parsedData: any) {
+  return apiRequest('/users/update-profile-from-cv/', {
+    method: 'PUT',
+    body: JSON.stringify({ parsed_data: parsedData }),
+  });
+}
+
+export async function getUserProfile() {
+  return apiRequest('/users/profile/');
+}
