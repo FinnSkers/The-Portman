@@ -9,7 +9,10 @@
     "deploy": "vercel",
     "deploy:prod": "vercel --prod",
     "deploy:preview": "vercel",
-    "vercel:link": "vercel link"
+    "vercel:link": "vercel link",
+    "netlify:deploy": "netlify deploy --prod --dir=.next",
+    "netlify:preview": "netlify deploy --dir=.next",
+    "netlify:build": "npm run build && netlify deploy --prod --dir=.next"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.15",
