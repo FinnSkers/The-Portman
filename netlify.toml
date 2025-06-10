@@ -1,11 +1,11 @@
 [build]
-  # Build command
-  command = "cd frontend && npm run build"
+  # Build command (no cd needed since base is already frontend)
+  command = "npm run build"
   
   # Output directory
-  publish = "frontend/.next"
+  publish = ".next"
   
-  # Install command
+  # Base directory
   base = "frontend"
 
 [build.environment]
