@@ -3,9 +3,9 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Shield, Users, BarChart3 } from 'lucide-react'
-import { AuthModal, useAuth } from '@/components/auth/AuthComponent'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { AuthModal, useAuth } from '@/components/auth'
+import { Button } from '@/components/ui'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
 import Link from 'next/link'
 
 export default function AuthTestPage() {

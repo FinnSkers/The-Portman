@@ -26,10 +26,10 @@ import {
   HardDrive,
   Cpu
 } from 'lucide-react'
-import { ProtectedRoute, useAuth } from '@/components/auth/AuthComponent'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
+import { ProtectedRoute, useAuth } from '@/components/auth'
+import { Button } from '@/components/ui'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui'
+import { Input } from '@/components/ui'
 import Link from 'next/link'
 
 // Types
