@@ -1,12 +1,15 @@
-# PORTMAN - AI-Powered Professional Portfolio & Resume Builder
+# 🎯 PORTMAN - AI-Powered CV Analysis & Portfolio Generator
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115.9-green)](https://fastapi.tiangolo.com/)
+[![Deployment Ready](https://img.shields.io/badge/Netlify-Ready-00C7B7)](https://netlify.com)
 
 ![PORTMAN Logo](portman.png)
 
-## 🚀 Overview
+> **Transform your CV into professional insights with AI-powered analysis and automated portfolio generation**
 
-PORTMAN is a modern, AI-powered platform that transforms CVs and resumes into stunning professional portfolios and optimized documents. Built with cutting-edge technology and featuring automatic deployment to Vercel.
-
-## ✨ Features
+## 🌟 Features
 
 - **AI-Powered CV Analysis**: Advanced parsing and optimization using modern AI models
 - **Portfolio Generation**: Automatic creation of professional portfolio websites
