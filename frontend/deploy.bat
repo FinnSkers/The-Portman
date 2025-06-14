@@ -1,8 +1,8 @@
 @echo off
-REM PORTMAN Vercel Deployment Script for Windows
-REM This script helps you deploy your project to Vercel
+REM PORTMAN Netlify Deployment Script for Windows
+REM This script helps you deploy your project to Netlify
 
-echo 🚀 PORTMAN Vercel Deployment Script
+echo 🚀 PORTMAN Netlify Deployment Script
 echo ====================================
 
 REM Check if we're in the right directory
@@ -12,11 +12,11 @@ if not exist "package.json" (
     exit /b 1
 )
 
-REM Check if Vercel CLI is installed
-vercel --version >nul 2>&1
+REM Check if Netlify CLI is installed
+netlify --version >nul 2>&1
 if errorlevel 1 (
-    echo 📦 Installing Vercel CLI...
-    npm install -g vercel
+    echo 📦 Installing Netlify CLI...
+    npm install -g netlify-cli
 )
 
 echo.
@@ -24,17 +24,24 @@ echo Choose deployment type:
 echo 1) Preview deployment
 echo 2) Production deployment  
 echo 3) Link project (first time setup)
-set /p choice=Enter your choice (1-3): 
+echo 4) Build only
+set /p choice=Enter your choice (1-4): 
 
 if "%choice%"=="1" (
-    echo 🔄 Deploying to preview...
-    vercel
+    echo 🔄 Building and deploying to preview...
+    npm run build
+    netlify deploy --dir=out
 ) else if "%choice%"=="2" (
-    echo 🔄 Deploying to production...
-    vercel --prod
+    echo 🔄 Building and deploying to production...
+    npm run build
+    netlify deploy --prod --dir=out
 ) else if "%choice%"=="3" (
-    echo 🔗 Linking project to Vercel...
-    vercel link
+    echo 🔗 Linking project to Netlify...
+    netlify link
+) else if "%choice%"=="4" (
+    echo 🔨 Building project...
+    npm run build
+    echo ✅ Build completed! Check the 'out' directory
 ) else (
     echo ❌ Invalid choice. Please run the script again.
     exit /b 1
@@ -42,5 +49,5 @@ if "%choice%"=="1" (
 
 echo.
 echo ✅ Deployment completed!
-echo 🌐 Check your Vercel dashboard for the deployment URL
+echo 🌐 Check your Netlify dashboard for the deployment URL
 pause

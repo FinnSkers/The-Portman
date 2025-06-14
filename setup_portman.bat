@@ -39,6 +39,7 @@ if %errorlevel% neq 0 (
 echo [2/4] Installing frontend dependencies...
 cd frontend
 npm install
+npm run build
 if %errorlevel% neq 0 (
     echo ERROR: Failed to install frontend dependencies
     pause
@@ -49,6 +50,7 @@ cd ..
 echo [3/4] Installing backend dependencies...
 cd backend
 pip install -r requirements.txt
+pip install python-jose[cryptography] passlib[bcrypt]
 if %errorlevel% neq 0 (
     echo ERROR: Failed to install backend dependencies
     pause

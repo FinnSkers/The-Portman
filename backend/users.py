@@ -316,3 +316,9 @@ async def get_user_profile(current_user: User = Depends(get_current_user)):
             status_code=500,
             detail=f"Failed to retrieve profile: {str(e)}"
         )
+
+@router.post("/refresh/")
+async def refresh_access_token(current_user: User = Depends(get_current_user)):
+    """Refresh access token for authenticated user"""
+    access_token = create_access_token(data={"sub": current_user.username})
+    return {"access_token": access_token, "token_type": "bearer"}

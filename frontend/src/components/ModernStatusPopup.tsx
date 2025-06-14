@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ChevronUp, 
   ChevronDown, 
@@ -358,8 +358,7 @@ const ModernStatusPopup: React.FC = () => {
       });
     }
   };
-
-  const refreshAll = async () => {
+  const refreshAll = useCallback(async () => {
     setIsLoading(true);
     setLastUpdate(new Date());
       await Promise.all([
@@ -372,18 +371,17 @@ const ModernStatusPopup: React.FC = () => {
     ]);
     
     setIsLoading(false);
-  };
+  }, []);
   useEffect(() => {
     if (!mounted) return;
     
-    refreshAll();
-    
+    refreshAll();    
     // Auto-refresh based on user setting
     if (autoRefresh) {
       const interval = setInterval(refreshAll, refreshInterval * 60 * 1000);
       return () => clearInterval(interval);
     }
-  }, [mounted, autoRefresh, refreshInterval]);
+  }, [mounted, autoRefresh, refreshInterval, refreshAll]);
   if (!mounted) {
     return null; // Prevent hydration mismatch
   }
