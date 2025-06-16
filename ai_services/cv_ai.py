@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 
 OPENROUTER_API_URL = os.getenv('OPENROUTER_API_URL', 'https://openrouter.ai/api/v1/chat/completions')
-OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '')
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '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')
 OPENROUTER_MODEL = os.getenv('OPENROUTER_MODEL', 'deepseek/deepseek-r1-0528-qwen3-8b:free')
 GROQ_API_URL = os.getenv('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions')
-GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
+GROQ_API_KEY = os.getenv('GROQ_API_KEY', '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')
 GROQ_MODEL = os.getenv('GROQ_MODEL', 'llama-3.1-8b-instant')
 
 def parse_cv_with_ai(text_content: str) -> dict:

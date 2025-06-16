@@ -1,398 +1,400 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { motion } from 'framer-motion'
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
-  BarChart3, 
   FileText, 
   Upload, 
-  Settings, 
+  BarChart3, 
+  Settings,
+  User,
+  Zap,
+  Plus,
   TrendingUp,
-  Activity,
-  Calendar,
-  Bell,
-  Search,
-  Filter,
   Download,
   Eye,
-  Trash2,
-  Plus
-} from 'lucide-react'
-import { ProtectedRoute, useAuth } from '@/components/auth/AuthComponent'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
-import Link from 'next/link'
-
-// Stats card component
-const StatsCard = ({ title, value, change, icon: Icon, color = 'blue' }: {
-  title: string
-  value: string
-  change: string
-  icon: React.ComponentType<{ className?: string }>
-  color?: string
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <Card className="backdrop-blur-xl bg-white/10 border-white/20 hover:bg-white/20 transition-all duration-300">      <CardContent className="p-4">        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-300">{title}</p>
-            <p className="text-2xl font-bold text-white">{value}</p>
-            <p className={`text-xs ${change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
-              {change} from last month
-            </p>
-          </div>
-          <div className={`p-3 rounded-full bg-${color}-500/20`}>
-            <Icon className={`h-5 w-5 text-${color}-400`} />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  </motion.div>
-)
-
-// Recent activity item component
-const ActivityItem = ({ action, file, time, status }: {
-  action: string
-  file: string
-  time: string
-  status: 'success' | 'processing' | 'failed'
-}) => (
-  <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-  >    <div className="flex items-center space-x-3">      <div className={`w-2 h-2 rounded-full ${
-        status === 'success' ? 'bg-emerald-400' :
-        status === 'processing' ? 'bg-amber-400' : 'bg-red-400'
-      }`} /><div>
-        <p className="text-white text-sm font-medium">{action}</p>
-        <p className="text-xs text-gray-400">{file}</p>
-      </div>
-    </div>
-    <div className="text-right">
-      <p className="text-xs text-gray-400">{time}</p>      <p className={`text-xs capitalize ${
-        status === 'success' ? 'text-emerald-400' :
-        status === 'processing' ? 'text-amber-400' : 'text-red-400'
-      }`}>
-        {status}
-      </p>
-    </div>
-  </motion.div>
-)
-
-// File item component
-const FileItem = ({ name, size, uploadDate, status }: {
-  name: string
-  size: string
-  uploadDate: string
-  status: 'processed' | 'processing' | 'failed'
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group"
-  >    <div className="flex items-center space-x-3">
-      <FileText className="h-5 w-5 text-blue-400" />
-      <div>
-        <p className="text-white text-sm font-medium">{name}</p>
-        <p className="text-xs text-gray-400">{size} • {uploadDate}</p>
-      </div>
-    </div>
-    <div className="flex items-center space-x-2">
-      <span className={`px-3 py-1 rounded-full text-xs border ${
-        status === 'processed' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
-        status === 'processing' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
-        'bg-red-500/20 text-red-400 border-red-500/30'
-      }`}>
-        {status}
-      </span>      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
-        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-          <Eye className="h-4 w-4" />
-        </Button>
-        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-          <Download className="h-4 w-4" />
-        </Button>
-        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-400 hover:text-red-300">
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  </motion.div>
-)
+  Loader2
+} from "lucide-react";
+import Link from "next/link";
+import api from "@/lib/api";
+import { useAuth } from "@/contexts/auth-context";
+import type { DashboardAnalytics, CV } from "@/lib/api";
 
 export default function DashboardPage() {
-  const { user } = useAuth()
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [analytics, setAnalytics] = React.useState<DashboardAnalytics | null>(null);
+  const [cvs, setCvs] = React.useState<CV[]>([]);  const [error, setError] = React.useState<string>("");
 
-  return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        {/* Header */}
-        <div className="sticky top-0 z-10 backdrop-blur-xl bg-black/20 border-b border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">              <div>
-                <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-                <p className="text-sm text-gray-400">Welcome back, {user?.username}</p>
-              </div>              <div className="flex items-center space-x-4">
-                <Button size="sm" variant="ghost" className="h-9 w-9 p-0">
-                  <Bell className="h-4 w-4" />
-                </Button>
-                <Button size="sm" variant="ghost" className="h-9 w-9 p-0">
-                  <Settings className="h-4 w-4" />
-                </Button>
-                {user?.is_admin && (
-                  <Link href="/admin">
-                    <Button size="sm" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-sm h-9 px-4">
-                      Admin Panel
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+  React.useEffect(() => {
+    const loadDashboardData = async () => {
+      if (!user) return; // Wait for user to be loaded by auth context
+      
+      try {
+        setIsLoading(true);
+        setError("");
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >            <div className="flex flex-wrap gap-4">              <Link href="/upload">
-                <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-sm h-10 px-6">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Document
-                </Button>
-              </Link>
-              <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 text-sm h-10 px-6">
-                <Search className="h-4 w-4 mr-2" />
-                Search Files
-              </Button>
-              <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 text-sm h-10 px-6">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                View Analytics
-              </Button>
-            </div>
-          </motion.div>
+        // Load dashboard data
+        const [analyticsResponse, cvsResponse] = await Promise.all([
+          api.getAnalytics(),
+          api.getCVs()
+        ]);
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatsCard
-              title="Total Documents"
-              value="1,234"
-              change="+12%"
-              icon={FileText}
-              color="blue"
-            />
-            <StatsCard
-              title="Processed Today"
-              value="56"
-              change="+23%"
-              icon={TrendingUp}
-              color="green"
-            />
-            <StatsCard
-              title="Processing Queue"
-              value="8"
-              change="-5%"
-              icon={Activity}
-              color="yellow"
-            />
-            <StatsCard
-              title="Storage Used"
-              value="2.4 GB"
-              change="+8%"
-              icon={BarChart3}
-              color="purple"
-            />
-          </div>
+        if (analyticsResponse.data) {
+          setAnalytics(analyticsResponse.data);
+        }
+        
+        if (cvsResponse.data) {
+          setCvs(cvsResponse.data);
+        }
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Recent Activity */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="lg:col-span-2"
-            >
-              <Card className="backdrop-blur-xl bg-white/10 border-white/20">                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-white text-lg font-medium">Recent Activity</CardTitle>
-                      <CardDescription className="text-gray-400 text-sm">
-                        Latest document processing activities
-                      </CardDescription>
-                    </div>                    <Button size="sm" variant="ghost" className="h-9 w-9 p-0">
-                      <Filter className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <ActivityItem
-                    action="Document Processed"
-                    file="Financial_Report_Q3.pdf"
-                    time="2 minutes ago"
-                    status="success"
-                  />
-                  <ActivityItem
-                    action="Upload Started"
-                    file="Contract_Agreement.docx"
-                    time="5 minutes ago"
-                    status="processing"
-                  />
-                  <ActivityItem
-                    action="Processing Failed"
-                    file="Corrupted_File.pdf"
-                    time="15 minutes ago"
-                    status="failed"
-                  />
-                  <ActivityItem
-                    action="Document Processed"
-                    file="Invoice_2024_001.pdf"
-                    time="1 hour ago"
-                    status="success"
-                  />
-                  <ActivityItem
-                    action="Bulk Upload Complete"
-                    file="Monthly_Reports.zip"
-                    time="2 hours ago"
-                    status="success"
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
+      } catch (err) {
+        console.error("Dashboard data loading error:", err);
+        setError("Failed to load dashboard data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-            {/* Quick Stats */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="space-y-6"
-            >              <Card className="backdrop-blur-xl bg-white/10 border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg font-medium">Processing Status</CardTitle>
-                </CardHeader>
-                <CardContent>                  <div className="space-y-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Success Rate</span>
-                      <span className="text-emerald-400">94.2%</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div className="bg-emerald-400 h-2 rounded-full w-[94%]"></div>
-                    </div>
-                    
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Queue Length</span>
-                      <span className="text-amber-400">8 files</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div className="bg-amber-400 h-2 rounded-full w-[30%]"></div>
-                    </div>
+    loadDashboardData();
+  }, [user]);
 
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Storage</span>
-                      <span className="text-blue-400">2.4/10 GB</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div className="bg-blue-400 h-2 rounded-full w-[24%]"></div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>              <Card className="backdrop-blur-xl bg-white/10 border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg font-medium">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button className="w-full justify-start text-sm h-10" variant="ghost">
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Upload
-                  </Button>
-                  <Button className="w-full justify-start text-sm h-10" variant="ghost">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Schedule Processing
-                  </Button>
-                  <Button className="w-full justify-start text-sm h-10" variant="ghost">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export Data
-                  </Button>
-                  <Button className="w-full justify-start text-sm h-10" variant="ghost">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-          {/* Recent Files */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-8"
-          >
-            <Card className="backdrop-blur-xl bg-white/10 border-white/20">              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-white text-lg font-medium">Recent Files</CardTitle>
-                    <CardDescription className="text-gray-400 text-sm">
-                      Your recently uploaded and processed documents
-                    </CardDescription>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        placeholder="Search files..."
-                        className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-400 text-sm h-10 w-64"
-                      />
-                    </div>
-                    <Button size="sm" variant="outline" className="border-white/20 text-white text-sm h-10 px-4">
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filter
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <FileItem
-                  name="Financial_Report_Q3.pdf"
-                  size="2.4 MB"
-                  uploadDate="Today, 3:42 PM"
-                  status="processed"
-                />
-                <FileItem
-                  name="Contract_Agreement.docx"
-                  size="856 KB"
-                  uploadDate="Today, 2:15 PM"
-                  status="processing"
-                />
-                <FileItem
-                  name="Invoice_2024_001.pdf"
-                  size="1.2 MB"
-                  uploadDate="Yesterday, 4:28 PM"
-                  status="processed"
-                />
-                <FileItem
-                  name="Meeting_Notes.txt"
-                  size="45 KB"
-                  uploadDate="Yesterday, 2:10 PM"
-                  status="processed"
-                />
-                <FileItem
-                  name="Presentation_Draft.pptx"
-                  size="5.7 MB"
-                  uploadDate="2 days ago"
-                  status="failed"
-                />
-              </CardContent>
-            </Card>
-          </motion.div>
+    try {
+      setIsLoading(true);
+      const response = await api.uploadCV(file);
+      if (response.data) {
+        // Refresh CV list
+        const cvsResponse = await api.getCVs();
+        if (cvsResponse.data) {
+          setCvs(cvsResponse.data);
+        }
+      }
+    } catch (err) {
+      console.error("File upload error:", err);
+      setError("Failed to upload CV");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading && !analytics) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
-    </ProtectedRoute>
-  )
+    );
+  }
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Dashboard Header */}
+      <header className="border-b border-border/40 bg-background/95 backdrop-blur">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center space-x-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <Zap className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <span className="text-xl font-bold text-gradient">PORTMAN</span>
+              </Link>
+              <Badge variant="secondary">Dashboard</Badge>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/settings">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/profile">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>      <div className="container mx-auto px-4 py-8">
+        {/* Error Display */}
+        {error && (
+          <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive">
+            {error}
+          </div>
+        )}
+
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome back, {user?.name || "User"}! 👋
+          </h1>
+          <p className="text-muted-foreground">
+            Ready to take your career to the next level? Let&apos;s get started.
+          </p>
+        </div>        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="glass-morphism border-0 cursor-pointer hover:scale-105 transition-transform">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Upload className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold">Upload New CV</h3>
+                  <p className="text-sm text-muted-foreground">Add a new resume for AI optimization</p>
+                </div>
+              </div>
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileUpload}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                disabled={isLoading}
+              />
+            </CardContent>
+          </Card>
+          
+          <QuickActionCard
+            title="View Analytics"
+            description="Track your career progress and insights"
+            icon={<BarChart3 className="h-6 w-6" />}
+            href="/dashboard/analytics"
+            color="bg-green-500/10 text-green-500"
+          />
+          <QuickActionCard
+            title="Manage CVs"
+            description="View and edit your existing resumes"
+            icon={<FileText className="h-6 w-6" />}
+            href="/dashboard/cvs"
+            color="bg-purple-500/10 text-purple-500"
+          />
+        </div>
+
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+              {/* Recent CVs */}
+            <Card className="glass-morphism border-0">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Recent CVs</CardTitle>
+                  <CardDescription>Your latest resume optimizations</CardDescription>
+                </div>
+                <Button size="sm" asChild>
+                  <Link href="/dashboard/cvs">
+                    View All ({cvs.length})
+                  </Link>
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {cvs.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No CVs uploaded yet</p>
+                    <p className="text-sm">Upload your first resume to get started</p>
+                  </div>
+                ) : (
+                  cvs.slice(0, 3).map((cv) => (
+                    <CVItem
+                      key={cv.id}
+                      name={cv.filename}
+                      type={cv.file_type.toUpperCase()}
+                      lastModified={new Date(cv.uploaded_at).toLocaleDateString()}
+                      status={cv.status === 'completed' ? 'Ready' : cv.status === 'processing' ? 'Processing' : 'Error'}
+                      atsScore={cv.analysis?.ats_score}
+                    />
+                  ))
+                )}
+              </CardContent>
+            </Card>            {/* Analytics Overview */}
+            <Card className="glass-morphism border-0">
+              <CardHeader>
+                <CardTitle>Performance Overview</CardTitle>
+                <CardDescription>Your career metrics at a glance</CardDescription>
+              </CardHeader>
+              <CardContent>                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <StatCard 
+                    number={analytics?.total_cvs?.toString() || "0"} 
+                    label="CVs Created" 
+                  />
+                  <StatCard 
+                    number={analytics?.avg_ats_score ? `${Math.round(analytics.avg_ats_score)}%` : "0%"} 
+                    label="Avg ATS Score" 
+                  />
+                  <StatCard 
+                    number={analytics?.total_applications?.toString() || "0"} 
+                    label="Applications" 
+                  />
+                  <StatCard 
+                    number={analytics?.interview_rate ? `${Math.round(analytics.interview_rate * 100)}%` : "0%"} 
+                    label="Interview Rate" 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            
+            {/* Account Status */}
+            <Card className="glass-morphism border-0">
+              <CardHeader>
+                <CardTitle className="text-lg">Account Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Plan</span>
+                    <Badge>Professional</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">CVs Remaining</span>
+                    <span className="text-sm font-medium">Unlimited</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Next Billing</span>
+                    <span className="text-sm font-medium">Jan 15, 2025</span>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full" asChild>
+                    <Link href="/settings/billing">
+                      Manage Plan
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Tips & Insights */}
+            <Card className="glass-morphism border-0">
+              <CardHeader>
+                <CardTitle className="text-lg">AI Insights</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
+                    <div className="flex items-start">
+                      <TrendingUp className="h-4 w-4 text-primary mr-2 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium">Skill Trending</p>
+                        <p className="text-xs text-muted-foreground">
+                          React.js is trending in your field
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-3 bg-green-500/5 rounded-lg border border-green-500/20">
+                    <div className="flex items-start">
+                      <Zap className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium">Optimization Tip</p>
+                        <p className="text-xs text-muted-foreground">
+                          Add quantified achievements to boost impact
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface QuickActionCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  href: string;
+  color: string;
+}
+
+function QuickActionCard({ title, description, icon, href, color }: QuickActionCardProps) {
+  return (
+    <Card className="glass-morphism border-0 hover:scale-105 transition-all duration-300 group cursor-pointer">
+      <Link href={href}>
+        <CardHeader className="pb-3">
+          <div className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg ${color}`}>
+            {icon}
+          </div>
+          <CardTitle className="text-lg">{title}</CardTitle>
+          <CardDescription className="text-sm">{description}</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <Button size="sm" variant="ghost" className="group-hover:translate-x-1 transition-transform">
+            Get Started
+            <Plus className="ml-2 h-3 w-3" />
+          </Button>
+        </CardContent>
+      </Link>
+    </Card>
+  );
+}
+
+interface CVItemProps {
+  name: string;
+  type: string;
+  lastModified: string;
+  status: string;
+  atsScore?: number;
+}
+
+function CVItem({ name, type, lastModified, status, atsScore }: CVItemProps) {
+  return (
+    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/30 transition-colors">
+      <div className="flex items-center space-x-3">
+        <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+          <FileText className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <p className="font-medium text-sm">{name}</p>
+          <p className="text-xs text-muted-foreground">
+            {type} • {lastModified}
+            {atsScore && ` • ATS Score: ${atsScore}%`}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Badge variant={status === "Ready" ? "default" : "secondary"} className="text-xs">
+          {status}
+        </Badge>
+        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+          <Eye className="h-3 w-3" />
+        </Button>
+        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+          <Download className="h-3 w-3" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+interface StatCardProps {
+  number: string;
+  label: string;
+}
+
+function StatCard({ number, label }: StatCardProps) {
+  return (
+    <div className="text-center">
+      <div className="text-2xl font-bold text-gradient mb-1">{number}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
+    </div>
+  );
 }

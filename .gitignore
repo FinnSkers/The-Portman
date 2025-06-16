@@ -82,7 +82,14 @@ Thumbs.db
 
 # Uploaded files
 uploaded_cvs/
+# Generated resumes and portfolios
 generated_resumes/
+generated_portfolios/
+# AI legacy utils (archive if not needed)
+backend/legacy_ai_utils/
+# Remove pycache
+__pycache__/
+backend/legacy_ai_utils/__pycache__/
 
 # Dump folder (archived files)
 dump/
@@ -112,6 +119,16 @@ archive/
 scripts/legacy/
 *.bak
 *.backup
+old-version/
+*-backup-*/
+*-old/
+*-temp/
+
+# Batch and script files (cleanup scripts)
+*.bat
+cleanup_*
+setup_*
+deploy-*
 
 # Generated portfolios and resumes
 generated_portfolios/
@@ -127,3 +144,17 @@ parsed_cv.json
 # Progress and status files
 *.txt
 !requirements.txt
+
+# Migration and schema files
+migrations/
+alembic/
+
+# Docker and deployment
+docker-compose.*.yml
+netlify.toml.backup
+vercel.json
+
+# IDE and editor files
+.vscode/
+!.vscode/tasks.json
+!.vscode/settings.json

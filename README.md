@@ -135,60 +135,36 @@ PORTMAN/
 
 ## 🧪 Testing
 
-Run the test suite:
-```bash
-# Backend tests
-cd backend
-python -m pytest
-
-# Frontend tests
-cd frontend
-npm test
-```
-
-## 🚢 Deployment
-
-### Production Build
-```bash
-# Frontend
-cd frontend
-npm run build
-
-# Backend
-cd backend
-pip install -r requirements.txt
-python -m uvicorn main:app --host 0.0.0.0 --port 8000
-```
-
-### Docker (Optional)
-```bash
-docker-compose -f docker-compose.production.yml up -d
-```
+- **Backend:**
+  - Tests are in `backend/tests/`. Run with:
+    ```bash
+    cd backend
+    python -m pytest
+    ```
+- **Frontend:**
+  - Tests are in `frontend/src/__tests__/`. Run with:
+    ```bash
+    cd frontend
+    npm test
+    ```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 🧑‍💻 Code of Conduct
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🎯 Roadmap
+## 📖 Documentation & Accessibility
 
-- [ ] Enhanced AI models integration
-- [ ] Multi-language support
-- [ ] Advanced portfolio themes
-- [ ] Export to multiple formats
-- [ ] Integration with job platforms
-- [ ] Mobile application
-
-## 📧 Contact
-
-For questions and support, please open an issue on GitHub.
+- All UI is responsive and accessible (keyboard navigation, ARIA labels, focus states).
+- See `docs/` for API and architecture docs.
+- For deployment, see `DEPLOYMENT_CHECKLIST.md`, `NETLIFY_DEPLOYMENT.md`, and `DEPLOYMENT_STATUS.md`.
 
 ---
 

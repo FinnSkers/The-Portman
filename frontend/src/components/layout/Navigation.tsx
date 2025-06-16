@@ -1,196 +1,188 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Brain, Upload, BarChart3, Target, Briefcase, Moon, Sun, LogIn, UserPlus } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { useAuth } from '@/contexts/AuthContext'
-import { UserMenu } from '@/components/auth/UserMenu'
-import { AuthModal } from '@/components/auth/AuthModal'
+import * as React from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import { Menu, Moon, Sun, Zap } from "lucide-react";
+import { useTheme } from "next-themes";
 
-export default function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login')
-  
-  const { isAuthenticated, loading } = useAuth()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const toggleTheme = () => {
-    setIsDark(!isDark)
-    document.documentElement.classList.toggle('dark')
-  }
-
-  const openAuthModal = (mode: 'login' | 'signup') => {
-    setAuthModalMode(mode)
-    setAuthModalOpen(true)
-  }
-
-  const navItems = [
-    { name: 'CV Upload', href: '#cv-upload', icon: Upload },
-    { name: 'Analytics', href: '#analytics', icon: BarChart3 },
-    { name: 'Benchmarking', href: '#benchmarking', icon: Target },
-    { name: 'Portfolio', href: '#portfolio', icon: Briefcase },
-  ]
+export function Navigation() {
+  const { theme, setTheme } = useTheme();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      scrolled ? 'glass-morphism backdrop-blur-md' : 'bg-transparent'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <Brain className="h-8 w-8 text-blue-500" />
-            <span className="gradient-text text-2xl font-bold">PORTMAN</span>
-          </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <Zap className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <span className="text-xl font-bold text-gradient">PORTMAN</span>
+          <Badge variant="secondary" className="ml-2 text-xs">
+            AI
+          </Badge>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              return (
+        {/* Desktop Navigation */}
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Features</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <ListItem
+                    href="/cv-optimizer"
+                    title="CV Optimizer"
+                    description="AI-powered CV optimization for ATS systems"
+                  />
+                  <ListItem
+                    href="/portfolio-generator"
+                    title="Portfolio Generator"
+                    description="Create stunning professional portfolios instantly"
+                  />
+                  <ListItem
+                    href="/analytics"
+                    title="Career Analytics"
+                    description="Track your career progress with advanced insights"
+                  />
+                  <ListItem
+                    href="/templates"
+                    title="Smart Templates"
+                    description="Industry-specific templates powered by AI"
+                  />
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/pricing"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              >
+                Pricing
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/about"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              >
+                About
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        {/* Right Side Actions */}
+        <div className="flex items-center space-x-2">
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="h-9 w-9 px-0"
+          >
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex md:items-center md:space-x-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/auth">Sign In</Link>
+            </Button>
+            <Button size="sm" className="cyber-border" asChild>
+              <Link href="/auth">Get Started</Link>
+            </Button>
+          </div>
+
+          {/* Mobile Menu */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col space-y-4">
                 <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center space-x-2 text-foreground/80 hover:text-foreground transition-colors duration-200 group"
+                  href="/features"
+                  className="text-lg font-medium"
+                  onClick={() => setIsOpen(false)}
                 >
-                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                  <span>{item.name}</span>
+                  Features
                 </Link>
-              )
-            })}
-          </div>          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full"
-            >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-            
-            {loading ? (
-              <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-            ) : isAuthenticated ? (
-              <UserMenu />
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  onClick={() => openAuthModal('login')}
-                  className="text-white hover:bg-white/10"
+                <Link
+                  href="/pricing"
+                  className="text-lg font-medium"
+                  onClick={() => setIsOpen(false)}
                 >
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Sign In
-                </Button>
-                <Button
-                  variant="cyber"
-                  onClick={() => openAuthModal('signup')}
-                  className="rounded-full"
+                  Pricing
+                </Link>
+                <Link
+                  href="/about"
+                  className="text-lg font-medium"
+                  onClick={() => setIsOpen(false)}
                 >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Get Started
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full"
-            >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className="rounded-full"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
-          </div>
+                  About
+                </Link>
+                <div className="flex flex-col space-y-2 pt-4">
+                  <Button variant="ghost" asChild>
+                    <Link href="/auth" onClick={() => setIsOpen(false)}>
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="/auth" onClick={() => setIsOpen(false)}>
+                      Get Started
+                    </Link>
+                  </Button>
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass-morphism border-t border-white/10"
-          >
-            <div className="px-4 py-6 space-y-4">
-              {navItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors"
-                  >
-                    <Icon className="h-5 w-5 text-blue-500" />
-                    <span className="text-foreground">{item.name}</span>
-                  </Link>
-                )
-              })}              <div className="pt-4 space-y-2">
-                {loading ? (
-                  <div className="flex justify-center">
-                    <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                  </div>
-                ) : isAuthenticated ? (
-                  <UserMenu />
-                ) : (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={() => openAuthModal('login')}
-                      className="w-full rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10"
-                    >
-                      <LogIn className="h-4 w-4 mr-2" />
-                      Sign In
-                    </Button>
-                    <Button
-                      variant="cyber"
-                      onClick={() => openAuthModal('signup')}
-                      className="w-full rounded-full"
-                    >
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Get Started
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        defaultMode={authModalMode}
-      />
-    </nav>
-  )
+    </header>
+  );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a"> & { title: string; description: string }
+>(({ className, title, description, href, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <Link
+          ref={ref}
+          href={href || "#"}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {description}
+          </p>
+        </Link>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";

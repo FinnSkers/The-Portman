@@ -6,7 +6,7 @@ import shutil
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from ai_services.cv_ai import parse_cv_with_ai
-from backend.legacy_ai_utils.cv_utils import extract_text_from_file
+from cv_utils import extract_text_from_file
 
 ALLOWED_EXTENSIONS = {"pdf", "docx", "txt"}
 UPLOAD_DIR = "uploaded_cvs"

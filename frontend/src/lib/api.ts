@@ -1,129 +1,281 @@
-import { LoginCredentials, RegisterCredentials, AuthResponse, User } from '@/types/auth'
+// API Configuration and Base URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// API client for backend communication
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-
-// Token management
-export const getToken = (): string | null => {
-  if (typeof window === 'undefined') return null
-  return localStorage.getItem('auth_token')
+// API Response Types
+export interface ApiResponse<T> {
+  data?: T;
+  message?: string;
+  error?: string;
+  status: number;
 }
 
-export const setToken = (token: string): void => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('auth_token', token)
-  }
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  is_admin: boolean;
+  created_at: string;
 }
 
-export const removeToken = (): void => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token')
-  }
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
 }
 
-// API request helper with auth
-export async function apiRequest(endpoint: string, options: RequestInit = {}) {
-  const token = getToken()
-  const url = `${API_BASE_URL}${endpoint}`
-  
-  const config: RequestInit = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-    ...options,
-  }
+export interface CV {
+  id: string;
+  filename: string;
+  file_type: string;
+  uploaded_at: string;
+  status: 'processing' | 'completed' | 'error';
+  analysis?: {
+    ats_score: number;
+    keywords: string[];
+    suggestions: string[];
+  };
+}
 
-  const response = await fetch(url, config)
-  if (!response.ok) {
-    let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-    let errorData: any = {};
-    try {
-      errorData = await response.json();
-      if (errorData.detail) errorMessage = errorData.detail;
-    } catch {}
-    if (response.status === 401) {
-      removeToken();
-      throw new Error(errorMessage || 'Authentication failed');
+export interface Portfolio {
+  id: string;
+  name: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  is_public: boolean;
+  template: string;
+}
+
+export interface CVAnalysis {
+  ats_score: number;
+  keywords: string[];
+  suggestions: string[];
+  improvements: string[];
+  industry_match: number;
+}
+
+export interface DashboardAnalytics {
+  total_cvs: number;
+  total_applications: number;
+  interview_rate: number;
+  avg_ats_score: number;
+  recent_activity: Array<{
+    type: string;
+    description: string;
+    timestamp: string;
+  }>;
+}
+
+export interface HealthStatus {
+  message: string;
+  version: string;
+  status: string;
+  features: string[];
+}
+
+// Base API Class
+class ApiClient {
+  private baseURL: string;
+  private token: string | null = null;
+
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
+    // Get token from localStorage if available
+    if (typeof window !== 'undefined') {
+      this.token = localStorage.getItem('auth_token');
     }
-    throw new Error(errorMessage);
   }
-  return response.json()
+
+  setToken(token: string) {
+    this.token = token;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', token);
+    }
+  }
+
+  clearToken() {
+    this.token = null;
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
+  }
+
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
+    const url = `${this.baseURL}${endpoint}`;    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add any additional headers from options
+    if (options.headers) {
+      Object.assign(headers, options.headers);
+    }
+
+    if (this.token) {
+      headers.Authorization = `Bearer ${this.token}`;
+    }
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
+
+      const data = await response.json();
+
+      return {
+        data: response.ok ? data : undefined,
+        error: !response.ok ? data.detail || 'An error occurred' : undefined,
+        message: data.message,
+        status: response.status,
+      };
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error.message : 'Network error',
+        status: 0,
+      };
+    }
+  }
+
+  // Authentication Methods
+  async login(email: string, password: string): Promise<ApiResponse<AuthResponse>> {
+    const formData = new FormData();
+    formData.append('username', email);
+    formData.append('password', password);
+
+    return this.request<AuthResponse>('/auth/login', {
+      method: 'POST',
+      headers: {}, // Remove Content-Type to let browser set it for FormData
+      body: formData,
+    });
+  }
+
+  async register(name: string, email: string, password: string): Promise<ApiResponse<User>> {
+    return this.request<User>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
+    });
+  }
+
+  async logout(): Promise<void> {
+    this.clearToken();
+  }
+
+  async getCurrentUser(): Promise<ApiResponse<User>> {
+    return this.request<User>('/auth/me');
+  }
+
+  // CV Methods
+  async uploadCV(file: File): Promise<ApiResponse<CV>> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.request<CV>('/cv/upload', {
+      method: 'POST',
+      headers: {}, // Remove Content-Type for FormData
+      body: formData,
+    });
+  }
+
+  async getCVs(): Promise<ApiResponse<CV[]>> {
+    return this.request<CV[]>('/cv/list');
+  }
+
+  async getCV(id: string): Promise<ApiResponse<CV>> {
+    return this.request<CV>(`/cv/${id}`);
+  }
+
+  async deleteCV(id: string): Promise<ApiResponse<void>> {
+    return this.request<void>(`/cv/${id}`, {
+      method: 'DELETE',
+    });
+  }
+  async analyzeCV(id: string): Promise<ApiResponse<CVAnalysis>> {
+    return this.request<CVAnalysis>(`/cv/${id}/analyze`, {
+      method: 'POST',
+    });
+  }
+
+  // Portfolio Methods
+  async getPortfolios(): Promise<ApiResponse<Portfolio[]>> {
+    return this.request<Portfolio[]>('/portfolio/list');
+  }
+
+  async createPortfolio(data: {
+    name: string;
+    description: string;
+    template: string;
+  }): Promise<ApiResponse<Portfolio>> {
+    return this.request<Portfolio>('/portfolio/create', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getPortfolio(id: string): Promise<ApiResponse<Portfolio>> {
+    return this.request<Portfolio>(`/portfolio/${id}`);
+  }
+
+  async updatePortfolio(id: string, data: Partial<Portfolio>): Promise<ApiResponse<Portfolio>> {
+    return this.request<Portfolio>(`/portfolio/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deletePortfolio(id: string): Promise<ApiResponse<void>> {
+    return this.request<void>(`/portfolio/${id}`, {
+      method: 'DELETE',
+    });
+  }
+  // Analytics Methods
+  async getAnalytics(): Promise<ApiResponse<DashboardAnalytics>> {
+    return this.request<DashboardAnalytics>('/analytics/dashboard');
+  }
+
+  async getCVAnalytics(id: string): Promise<ApiResponse<CVAnalysis>> {
+    return this.request<CVAnalysis>(`/analytics/cv/${id}`);
+  }
+  // Health Check
+  async healthCheck(): Promise<ApiResponse<HealthStatus>> {
+    return this.request<HealthStatus>('/');
+  }
 }
 
-// Authentication API methods
-export async function login(credentials: LoginCredentials): Promise<AuthResponse> {
-  return apiRequest('/users/login/', {
-    method: 'POST',
-    body: JSON.stringify(credentials),
-  })
-}
+// Create and export the API client instance
+export const apiClient = new ApiClient(API_BASE_URL);
 
-export async function register(credentials: RegisterCredentials): Promise<{ username: string; email: string; registered: boolean }> {
-  return apiRequest('/users/register/', {
-    method: 'POST',
-    body: JSON.stringify(credentials),
-  })
-}
+// Export individual API functions for convenience
+export const auth = {
+  login: (email: string, password: string) => apiClient.login(email, password),
+  register: (name: string, email: string, password: string) => apiClient.register(name, email, password),
+  logout: () => apiClient.logout(),
+  getCurrentUser: () => apiClient.getCurrentUser(),
+  setToken: (token: string) => apiClient.setToken(token),
+};
 
-export async function getCurrentUser(): Promise<User> {
-  return apiRequest('/users/me/')
-}
+export const cv = {
+  upload: (file: File) => apiClient.uploadCV(file),
+  list: () => apiClient.getCVs(),
+  get: (id: string) => apiClient.getCV(id),
+  delete: (id: string) => apiClient.deleteCV(id),
+  analyze: (id: string) => apiClient.analyzeCV(id),
+};
 
-export async function refreshToken(): Promise<AuthResponse> {
-  return apiRequest('/users/refresh/', {
-    method: 'POST',
-  })
-}
+export const portfolio = {
+  list: () => apiClient.getPortfolios(),
+  create: (data: { name: string; description: string; template: string }) => 
+    apiClient.createPortfolio(data),
+  get: (id: string) => apiClient.getPortfolio(id),
+  update: (id: string, data: Partial<Portfolio>) => apiClient.updatePortfolio(id, data),
+  delete: (id: string) => apiClient.deletePortfolio(id),
+};
 
-export async function forgotPassword(email: string): Promise<{ message: string }> {
-  return apiRequest('/users/forgot-password/', {
-    method: 'POST',
-    body: JSON.stringify({ email }),
-  })
-}
+export const analytics = {
+  dashboard: () => apiClient.getAnalytics(),
+  cv: (id: string) => apiClient.getCVAnalytics(id),
+};
 
-export async function resetPassword(token: string, password: string): Promise<{ message: string }> {
-  return apiRequest('/users/reset-password/', {
-    method: 'POST',
-    body: JSON.stringify({ token, password }),
-  })
-}
-
-// CV API methods
-export async function uploadCV(file: File) {
-  const token = getToken()
-  const formData = new FormData();
-  formData.append('file', file);
-  
-  const res = await fetch(`${API_BASE_URL}/cv/upload/`, {
-    method: 'POST',
-    headers: {
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-    body: formData,
-  });
-  
-  if (!res.ok) throw new Error('Upload failed');
-  return res.json();
-}
-
-export async function parseCV(filename: string) {
-  return apiRequest('/cv/parse/', {
-    method: 'POST',
-    body: JSON.stringify({ filename }),
-  });
-}
-
-// User Profile API methods
-export async function updateProfileFromCV(parsedData: any) {
-  return apiRequest('/users/update-profile-from-cv/', {
-    method: 'PUT',
-    body: JSON.stringify({ parsed_data: parsedData }),
-  });
-}
-
-export async function getUserProfile() {
-  return apiRequest('/users/profile/');
-}
+export default apiClient;

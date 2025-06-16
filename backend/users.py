@@ -12,8 +12,9 @@ from pydantic import BaseModel
 from auth_utils import verify_password, get_password_hash, create_access_token, get_current_user, get_current_admin_user
 import json
 
-# Import database components from main.py to avoid conflicts
-from main import User, SessionLocal
+# Import database components directly to avoid circular imports
+from models import User
+from database import SessionLocal
 
 def get_db():
     db = SessionLocal()

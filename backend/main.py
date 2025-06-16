@@ -1,23 +1,23 @@
 import os
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+
 import sys
+sys.path.append(os.path.dirname(__file__))
 from fastapi import FastAPI, Request, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exception_handlers import http_exception_handler
-from dotenv import load_dotenv
 import logging
 from fastapi.middleware.gzip import GZipMiddleware
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from database import engine, SessionLocal, Base
 
-# Add the parent directory to sys.path for imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Import all models so they're registered with Base
+from models import User, Portfolio, UploadedFile, UserAnalytics, SystemLog, AIJob, Subscription
 
-# Load environment variables
-load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
-
+# --- APP INITIALIZATION ---
 app = FastAPI(
     title="PORTMAN Backend API",
     description="AI-powered CV parsing and portfolio generation platform",
@@ -43,45 +43,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger = logging.getLogger("portman-backend")
 
-# --- USER MODEL ---
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean, default=True)
-    is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    reset_token = Column(String, nullable=True)
-    reset_token_expires_at = Column(DateTime, nullable=True)
-    
-    # CV Data fields
-    full_name = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
-    address = Column(String, nullable=True)
-    summary = Column(String, nullable=True)
-    experience_json = Column(String, nullable=True)  # JSON string of experience array
-    education_json = Column(String, nullable=True)   # JSON string of education array
-    skills_json = Column(String, nullable=True)      # JSON string of skills array
-    languages_json = Column(String, nullable=True)   # JSON string of languages array
-    certifications_json = Column(String, nullable=True)  # JSON string of certifications array
-    links_json = Column(String, nullable=True)       # JSON string of links array
-    cv_updated_at = Column(DateTime, nullable=True)  # Track when CV data was last updated
-    
-    # CV Data fields
-    full_name = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
-    address = Column(String, nullable=True)
-    summary = Column(String, nullable=True)
-    experience_json = Column(String, nullable=True)  # JSON string of experience array
-    education_json = Column(String, nullable=True)   # JSON string of education array
-    skills_json = Column(String, nullable=True)      # JSON string of skills array
-    languages_json = Column(String, nullable=True)   # JSON string of languages array
-    certifications_json = Column(String, nullable=True)  # JSON string of certifications array
-    links_json = Column(String, nullable=True)       # JSON string of links array
-    cv_updated_at = Column(DateTime, nullable=True)  # Track when CV data was last updated
-
+# Models are now imported from models.py
 Base.metadata.create_all(bind=engine)
 
 # --- HEALTH CHECK ---
@@ -130,6 +92,7 @@ from logs import router as logs_router
 from ats_resume import router as ats_router
 from analytics import router as analytics_router
 from system_health import router as system_health_router
+from additional_endpoints import router as additional_router
 
 # Add routers to api_v1_router instead of app
 api_v1_router.include_router(cv_router)
@@ -139,6 +102,7 @@ api_v1_router.include_router(portfolio_router)
 api_v1_router.include_router(logs_router)
 api_v1_router.include_router(ats_router)
 api_v1_router.include_router(analytics_router)
+api_v1_router.include_router(additional_router)
 
 # Add system health router directly to app (not under /api/v1)
 app.include_router(system_health_router)
