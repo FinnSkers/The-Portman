@@ -1,79 +1,82 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import "@fontsource/press-start-2p";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { AuthProvider } from "@/contexts/auth-context";
-import { Toaster } from "@/components/ui/sonner";
-
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
-  title: "PORTMAN - AI-Powered Career Platform",
-  description: "Transform your career with AI-powered CV optimization, portfolio generation, and ATS analysis. Built for the future of professional development.",
-  keywords: ["CV", "Resume", "Portfolio", "AI", "ATS", "Career", "Job Search", "Professional Development"],
-  authors: [{ name: "PORTMAN Team" }],
-  creator: "PORTMAN",
-  publisher: "PORTMAN",
-  robots: "index, follow",
+  title: "Portman - AI-Powered Career Tools",
+  description:
+    "Build your portfolio, optimize your resume, and get AI-driven career insights—all in a playful 8-bit world.",
+  keywords: ["AI", "career tools", "portfolio", "resume", "8-bit", "retro"],
+  authors: [{ name: "Portman Team" }],
+  creator: "Portman Team",
+  publisher: "Portman",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://portman.ai"),
   openGraph: {
-    type: "website",
-    locale: "en_US",
+    title: "Portman - AI-Powered Career Tools",
+    description:
+      "Build your portfolio, optimize your resume, and get AI-driven career insights—all in a playful 8-bit world.",
     url: "https://portman.ai",
-    title: "PORTMAN - AI-Powered Career Platform",
-    description: "Transform your career with AI-powered CV optimization, portfolio generation, and ATS analysis.",
-    siteName: "PORTMAN",
+    siteName: "Portman",
+    images: [
+      {
+        url: "/8bitlogo.png",
+        width: 800,
+        height: 600,
+        alt: "Portman - AI-Powered Career Tools",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PORTMAN - AI-Powered Career Platform",
-    description: "Transform your career with AI-powered CV optimization, portfolio generation, and ATS analysis.",
+    title: "Portman - AI-Powered Career Tools",
+    description:
+      "Build your portfolio, optimize your resume, and get AI-driven career insights—all in a playful 8-bit world.",
+    images: ["/8bitlogo.png"],
     creator: "@portman_ai",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  icons: {
+    icon: "/8bitlogo.png",
+    shortcut: "/8bitlogo.png",
+    apple: "/8bitlogo.png",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body 
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          inter.variable,
-          jetbrainsMono.variable
-        )}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <div className="flex-1">{children}</div>
-            </div>
-          </AuthProvider>
-          <Toaster />
-        </ThemeProvider>
+    <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className="font-sans antialiased bg-black text-green-400 min-h-screen overflow-x-hidden">
+        {children}
       </body>
     </html>
   );

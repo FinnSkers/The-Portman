@@ -8,7 +8,8 @@ from database import SessionLocal
 from auth_utils import get_current_user
 from typing import List, Dict, Any
 
-router = APIRouter()
+# Change router to include the 'additional' prefix and use tags for organization
+router = APIRouter(prefix="/additional", tags=["additional"])
 
 # Database dependency
 def get_db():

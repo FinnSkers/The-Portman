@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "frontend/src/app/pro-frontend"
+  ]
+}
